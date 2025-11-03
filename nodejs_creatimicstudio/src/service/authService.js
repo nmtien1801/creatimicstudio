@@ -1,8 +1,7 @@
 import db from "../models/index.js";
 import bcrypt from "bcryptjs";
-import dotenv from "dotenv";
 import { Op } from "sequelize"
-
+import dotenv from "dotenv";
 dotenv.config();
 
 // ====================== Helper ======================
@@ -88,7 +87,7 @@ const handleLogin = async (rawData) => {
         ],
       },
     });
-    
+
     if (!user) {
       return {
         EM: "Email or phone not found",

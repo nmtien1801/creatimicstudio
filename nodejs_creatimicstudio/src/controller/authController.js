@@ -1,8 +1,26 @@
 import authService from "../service/authService.js";
+import { createToken, verifyRefreshToken } from "../middleware/jwtAction";
+import dotenv from "dotenv";
+dotenv.config();
 
 const handleLogin = async (req, res) => {
   try {
     let data = await authService.handleLogin(req.body);
+
+    const { accessToken, refreshToken } = createToken(data.DT);
+
+    // set cookie
+    res.cookie("accessToken", accessToken, {
+      httpOnly: false, // chỉ cho phép server đọc cookie, không cho client
+      secure: false,
+      maxAge: +process.env.JWT_REFRESH_EXPIRES_TOKEN,
+    });
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true, // chỉ cho phép server đọc cookie, không cho client
+      secure: false,
+      maxAge: +process.env.JWT_REFRESH_EXPIRES_TOKEN + 86400000,
+    });
+
     return res.status(200).json({
       EM: data.EM,
       EC: data.EC,
@@ -36,7 +54,50 @@ const handleRegister = async (req, res) => {
   }
 }
 
+const handleRefreshToken = async (req, res) => {
+  const refreshToken = req.cookies?.refreshToken;
+
+  if (!refreshToken) {
+    return res.status(401).json({ EC: -1, EM: "Missing refresh token" });
+  }
+
+  const decoded = verifyRefreshToken(refreshToken);
+
+  if (!decoded) {
+    return res.status(401).json({ EC: -1, EM: "Invalid refresh token" });
+  }
+
+  const { accessToken, refreshToken: newRefreshToken } = createToken({
+    id: decoded.id,
+    userName: decoded.userName,
+    email: decoded.email,
+    phone: decoded.phone,
+    role: decoded.role,
+    address: decoded.address,
+    image: decoded.image,
+  });
+
+  // set cookie mới
+  res.cookie("accessToken", accessToken, {
+      httpOnly: false, // chỉ cho phép server đọc cookie, không cho client
+      secure: false,
+      maxAge: +process.env.JWT_REFRESH_EXPIRES_TOKEN,
+    });
+  res.cookie("refreshToken", newRefreshToken, {
+    httpOnly: true,
+    secure: false,
+    maxAge: +process.env.JWT_REFRESH_EXPIRES_TOKEN + 86400000,
+  });
+
+  return res.status(200).json({
+    EC: 0,
+    EM: "Token refreshed successfully",
+    DT: { accessToken },
+  });
+};
+
 module.exports = {
-    handleLogin,
-    handleRegister
+  handleLogin,
+  handleRegister,
+  handleRefreshToken
 };

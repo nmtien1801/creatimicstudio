@@ -29,6 +29,18 @@ function AuthenticatedLayout() {
                     <Outlet />
                 </main>
             </div>
+
+            <ToastContainer
+                position="top-right"
+                autoClose={2000} // tự đóng sau 3 giây
+                hideProgressBar={false}
+                newestOnTop
+                closeOnClick
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+            />
         </div>
     );
 }

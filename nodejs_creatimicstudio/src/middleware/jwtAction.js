@@ -3,17 +3,16 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const createJwt = (payload) => {
-  const key = process.env.JWT_SECRET;
-  let token = null;
+const createToken = (payload) => {
+  const accessToken = jwt.sign(payload, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN, // token sống 15 phút
+  });
 
-  try {
-    token = jwt.sign(payload, key, { expiresIn: process.env.JWT_EXPIRES_IN });
-  } catch (error) {
-    console.error("❌ Error creating JWT:", error);
-  }
+  const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, {
+    expiresIn: process.env.JWT_REFRESH_EXPIRES_TOKEN, // token sống 7 ngày
+  });
 
-  return token;
+  return { accessToken, refreshToken };
 };
 
 const verifyToken = (token) => {
@@ -21,17 +20,29 @@ const verifyToken = (token) => {
   try {
     return jwt.verify(token, key);
   } catch (error) {
-    console.error("❌ Error verifying token:", error);
+    console.log(">>>check err verify token: ", error.message);
+    if (error.name === "TokenExpiredError") {
+      return "TokenExpiredError"; // jwt hết hạn
+    }
+    return null;
+  }
+};
+
+// refresh token
+const verifyRefreshToken = (token) => {
+  try {
+    return jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+  } catch (e) {
     return null;
   }
 };
 
 const nonSecurePaths = [
   "/",
-  "/api/auth/login",
-  "/api/auth/logout",
-  "/api/auth/register",
-  "/api/auth/refreshToken",
+  "/auth/login",
+  "/auth/logout",
+  "/auth/register",
+  "/auth/refreshToken",
 ];
 
 // lấy token từ header Authorization: Bearer <token>
@@ -46,31 +57,53 @@ const extractToken = (req) => {
 };
 
 // middleware kiểm tra JWT
-const checkUserJwt = (req, res, next) => {
-  if (nonSecurePaths.includes(req.path)) return next();
+const checkUserJwt = async (req, res, next) => {
+  if (nonSecurePaths.includes(req.path)) return next(); // kh check middleware url (2)
+  let cookies = req.cookies;
+  let tokenFromHeader = extractToken(req);
 
-  const tokenFromHeader = extractToken(req);
+  if ((cookies && cookies.accessToken) || tokenFromHeader) {
+    // bug vừa vào đã check quyền xác thực khi chưa login của Context
+    let accessToken =
+      cookies && cookies.accessToken ? cookies.accessToken : tokenFromHeader;
+    let decoded = verifyToken(accessToken);
 
-  if (tokenFromHeader) {
-    const decoded = verifyToken(tokenFromHeader);
-    if (decoded) {
-      req.user = decoded;
-      req.token = tokenFromHeader;
-      return next();
+    if (decoded && decoded !== "TokenExpiredError") {
+      req.user = decoded; // gán thêm .user(data cookie) vào req BE nhận từ FE
+      req.accessToken = accessToken; // gán thêm .token(data cookie) vào req BE nhận từ FE
+      req.refreshToken = cookies.refreshToken; // gán thêm .token(data cookie) vào req BE nhận từ FE
+      next();
+    } else if (decoded === "TokenExpiredError") {
+      if (cookies && cookies.refreshToken) {
+        // Retry(FE) nếu lỗi là 403 -> vì token refresh chưa kịp /api/account -> retry để lấy token mới
+        return res.status(403).json({
+          EC: -1,
+          DT: "",
+          EM: "need to retry with new token",
+        });
+      } else {
+        return res.status(401).json({
+          EC: -1,
+          DT: "",
+          EM: "Not authenticated the user(token accessToken)",
+        });
+      }
     } else {
       return res.status(401).json({
         EC: -1,
         DT: "",
-        EM: "Invalid or expired token",
+        EM: "Not authenticated the user(token accessToken)",
       });
     }
   }
-
-  return res.status(401).json({
-    EC: -1,
-    DT: "",
-    EM: "Missing authentication token",
-  });
+  // ngược lại khi không có cookies or header thì trả ra lỗi không xác thực
+  else {
+    return res.status(401).json({
+      EC: -1,
+      DT: "",
+      EM: "Not authenticated the user(accessToken | JWT)",
+    });
+  }
 };
 
 // middleware kiểm tra quyền truy cập
@@ -104,26 +137,10 @@ const checkUserPermission = (req, res, next) => {
   next();
 };
 
-// refresh token
-const refreshToken = (payload) => {
-  const key = process.env.JWT_REFRESH_TOKEN;
-  let token = null;
-
-  try {
-    token = jwt.sign(payload, key, {
-      expiresIn: process.env.JWT_REFRESH_EXPIRES_TOKEN,
-    });
-  } catch (error) {
-    console.error("❌ Error refreshing JWT:", error);
-  }
-
-  return token;
-};
-
 export {
-  createJwt,
+  createToken,
   verifyToken,
   checkUserJwt,
   checkUserPermission,
-  refreshToken,
+  verifyRefreshToken,
 };
