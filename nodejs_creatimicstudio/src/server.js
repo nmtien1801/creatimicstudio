@@ -1,6 +1,6 @@
 require("dotenv").config();
 import express from "express";
-// const connectDB = require("./config/db.config");
+import configCORS from "./config/cors";
 
 // Routers
 import authApi from "./router/authApi";
@@ -8,7 +8,7 @@ import authApi from "./router/authApi";
 
 const app = express();
 
-// app.use(corsMiddleware);
+configCORS(app);
 
 app.use(express.json());
 

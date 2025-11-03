@@ -18,8 +18,7 @@ const LoginForm = () => {
         };
         if (username && password) {
             let res = await dispatch(Login(body));
-
-            if (!res.payload) {
+            if (res && res.payload.EC === 0) {
                 navigate('/dashboard');
             }
         } else {
@@ -51,7 +50,7 @@ const LoginForm = () => {
                     <div className="mb-4">
                         <input
                             type="text"
-                            placeholder="Username"
+                            placeholder="Email or phone"
                             className="w-full px-4 py-2 border border-gray-300 rounded-sm focus:outline-none focus:border-gray-500 placeholder-gray-500 text-sm"
                             required
                             // 3. Kết nối trạng thái và sự kiện onChange
@@ -80,6 +79,13 @@ const LoginForm = () => {
                             className="w-[90px] py-2 text-sm text-black border border-gray-300 bg-white hover:bg-gray-50 transition duration-150 rounded-sm"
                         >
                             Đăng nhập
+                        </button>
+                        <button
+                            type="button"
+                            className="w-[90px] py-2 text-sm text-black border border-gray-300 bg-white hover:bg-gray-50 transition duration-150 rounded-sm"
+                            onClick={() => navigate('/register')}
+                        >
+                            Đăng ký
                         </button>
                         <button
                             type="button"

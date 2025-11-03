@@ -3,7 +3,7 @@ require("dotenv").config();
 const configCORS = (app) => {
   app.use(function (req, res, next) {
     res.setHeader(
-      "Access-Control-Allow-Origin",
+      "Access-Control-Allow-Origin", 
       process.env.REACT_URL
     );
 

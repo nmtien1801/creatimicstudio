@@ -21,14 +21,17 @@ api.interceptors.request.use((config) => {
 
 export const ApiManager = {
     get: async (url, { params } = {}) => {
+        console.log('params: ', params)
         const res = await api.get(url, { params });
         return res.data;
     },
     post: async (url, body, query) => {
+        console.log('body: ', body)
         const res = await api.post(url, body, { params: query });
         return res.data;
     },
     put: async (url, data) => {
+        console.log('body: ', data)
         const res = await api.put(url, data);
         return res.data;
     },

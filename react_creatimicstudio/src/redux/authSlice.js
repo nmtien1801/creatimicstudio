@@ -7,8 +7,16 @@ const initialState = {
 
 export const Login = createAsyncThunk(
   "auth/Login",
-  async ({ user }, thunkAPI) => {
-    const response = await ApiAuth.LoginApi(user);
+  async (data, thunkAPI) => {
+    const response = await ApiAuth.LoginApi(data);
+    return response;
+  }
+);
+
+export const Register = createAsyncThunk(
+  "auth/Register",
+  async (data, thunkAPI) => {
+    const response = await ApiAuth.RegisterApi(data);
     return response;
   }
 );
@@ -24,11 +32,17 @@ const authSlice = createSlice({
     builder
       .addCase(Login.pending, (state) => {})
       .addCase(Login.fulfilled, (state, action) => {
-        // if (action.payload.EC === 0) {
-        //   state.userInfo = action.payload.DT || {};
-        // }
+        if (action.payload.EC === 0) {
+          state.userInfo = action.payload.DT || {};
+        }
       })
       .addCase(Login.rejected, (state, action) => {});
+
+    // Register
+    builder
+      .addCase(Register.pending, (state) => {})
+      .addCase(Register.fulfilled, (state, action) => {})
+      .addCase(Register.rejected, (state, action) => {});
   },
 });
 

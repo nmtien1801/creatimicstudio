@@ -1,177 +1,136 @@
-import db from "../models/index";
+import db from "../models/index.js";
 import bcrypt from "bcryptjs";
-import { at } from "lodash";
-import { raw } from "body-parser";
-require("dotenv").config();
+import dotenv from "dotenv";
+import { Op } from "sequelize"
 
-const checkPhoneExists = async (userPhone) => {
-  let phone = await db.User.findOne({ phone: userPhone });
-  if (phone) {
-    return true;
-  }
-  return false;
-};
+dotenv.config();
 
-const checkEmailExists = async (emailUser) => {
-  let email = await db.User.findOne({ email: emailUser });
-  if (email) {
-    return true;
-  }
-  return false;
-};
-
-// hash password
+// ====================== Helper ======================
 const salt = bcrypt.genSaltSync(10);
-const hashPassWord = (userPassWord) => {
-  return bcrypt.hashSync(userPassWord, salt);
+
+const hashPassword = (password) => {
+  return bcrypt.hashSync(password, salt);
 };
 
-const checkPassword = (userPassWord, hashPassWord) => {
-  return bcrypt.compareSync(userPassWord, hashPassWord); // true or false
+const checkPassword = (plainPassword, hashedPassword) => {
+  return bcrypt.compareSync(plainPassword, hashedPassword);
 };
 
+// ====================== Check Exists ======================
+const checkPhoneExists = async (phone) => {
+  const user = await db.User.findOne({ where: { phone } });
+  return !!user;
+};
+
+const checkEmailExists = async (email) => {
+  const user = await db.User.findOne({ where: { email } });
+  return !!user;
+};
+
+// ====================== REGISTER ======================
+const handleRegister = async (rawData) => {
+  try {
+    const isEmailExists = await checkEmailExists(rawData.email);
+    if (isEmailExists) {
+      return {
+        EM: "Email already exists",
+        EC: 1,
+        DT: "",
+      };
+    }
+
+    const isPhoneExists = await checkPhoneExists(rawData.phone);
+    if (isPhoneExists) {
+      return {
+        EM: "Phone number already exists",
+        EC: 1,
+        DT: "",
+      };
+    }
+
+    const newUser = await db.User.create({
+      userName: rawData.username,
+      email: rawData.email,
+      password: hashPassword(rawData.password),
+      phone: rawData.phone,
+      address: rawData.address,
+      role: rawData.role || "client",
+      image: rawData.image || "",
+    });
+
+    return {
+      EM: "Register successfully",
+      EC: 0,
+      DT: {
+        id: newUser.id,
+        email: newUser.email,
+        userName: newUser.userName,
+      },
+    };
+  } catch (error) {
+    console.log(">>> Error Register:", error);
+    return {
+      EM: "Something went wrong in service (register)",
+      EC: -2,
+      DT: "",
+    };
+  }
+};
+
+// ====================== LOGIN ======================
 const handleLogin = async (rawData) => {
   try {
-    // Tìm tài khoản bằng email
-    let user = await db.User.findOne({ email: rawData.user.email });
-
+    const user = await db.User.findOne({
+      where: {
+        [Op.or]: [
+          { email: rawData.username }, // login bằng email
+          { phone: rawData.username }, // login bằng phone
+        ],
+      },
+    });
+    
     if (!user) {
-      user = new db.User({
-        uid: rawData.user.uid,
-        email: rawData.user.email,
-        username: rawData.user.displayName,
-        password: "",
-        avatar: rawData.user.photoURL,
-      });
+      return {
+        EM: "Email or phone not found",
+        EC: 1,
+        DT: "",
+      };
     }
-    // nếu có thì update thông tin
-    user.uid = rawData.user.uid;
 
-    await user.save();
-    // Trả về thành công
+    const isPasswordCorrect = checkPassword(rawData.password, user.password);
+    if (!isPasswordCorrect) {
+      return {
+        EM: "Incorrect password",
+        EC: 1,
+        DT: "",
+      };
+    }
+
     return {
       EM: "Login successfully",
       EC: 0,
       DT: {
-        userId: user.id,
-        uid: user.uid,
+        id: user.id,
+        userName: user.userName,
         email: user.email,
-        username: user.username,
-        address: user.address,
         phone: user.phone,
-        dob: user.dob,
-        gender: user.gender,
-        avatar: user.avatar,
-        role: user.role, // doctor, patient
+        role: user.role,
+        address: user.address,
+        image: user.image,
       },
     };
   } catch (error) {
-    console.log(">>>>check Err Login user: ", error);
+    console.log(">>> Error Login:", error);
     return {
-      EM: "something wrong in service ...",
+      EM: "Something went wrong in service (login)",
       EC: -2,
       DT: "",
     };
   }
 };
 
-const handleRegister = async (rawData) => {
-  try {
-    let isEmailExists = await checkEmailExists(rawData.email);
-    if (isEmailExists) {
-      return {
-        EM: "your email is already exists",
-        EC: 1,
-        DT: "",
-      };
-    }
-
-    let isPhoneExists = await checkPhoneExists(rawData.phoneNumber);
-    if (isPhoneExists) {
-      return {
-        EM: "SĐT is already exists",
-        EC: 1,
-        DT: "",
-      };
-    }
-
-    let newUser = {
-      email: rawData.email,
-      username: rawData.username,
-      password: hashPassWord(rawData.password),
-      phone: rawData.phoneNumber,
-      address: rawData.address,
-      gender: rawData.gender,
-      dob: rawData.dob,
-      avatar: rawData.avatar,
-      captcha: rawData.captcha,
-      uid: rawData.uid,
-    };
-
-    // Tạo tài khoản mới trong MongoDB
-    let user = new db.User(newUser);
-    await user.save();
-
-    // tạo tài khoản patient mặc định khi đăng ký
-    let patient = new db.Patient({
-      userId: user._id,
-      name: rawData.username,
-      email: rawData.email,
-      phone: rawData.phoneNumber,
-      address: rawData.address,
-    });
-    await patient.save();
-
-    return {
-      EM: "register success",
-      EC: 0,
-      DT: {},
-    };
-  } catch (error) {
-    console.log(">>>>check Err Register user: ", error);
-    return {
-      EM: "something wrong in service ...",
-      EC: -2,
-      DT: "",
-    };
-  }
-};
-
-// const changePassword = async (phone, currentPassword, newPassword) => {
-//   try {
-//     const user = await User.findOne({ phone });
-
-//     if (user) {
-//       let isCorrectPassword = checkPassword(currentPassword, user.password);
-//       if (isCorrectPassword) {
-//         // update password
-//         user.password = hashPassWord(newPassword);
-//         await user.save();
-
-//         return {
-//           EM: "ok",
-//           EC: 0,
-//           DT: user,
-//         };
-//       }
-//       return {
-//         EM: `currentPassword ${currentPassword} is incorrect`,
-//         EC: 1,
-//         DT: "",
-//       };
-//     }
-//   } catch (error) {
-//     console.log(">>>>check Err changePassword: ", error);
-//     return {
-//       EM: "something wrong in service ...",
-//       EC: -2,
-//       DT: "",
-//     };
-//   }
-// };
-
-module.exports = {
-  handleLogin,
-  hashPassWord,
+// ====================== EXPORT ======================
+export default {
   handleRegister,
+  handleLogin,
 };

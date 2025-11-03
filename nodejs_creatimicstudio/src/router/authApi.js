@@ -14,8 +14,8 @@ const AuthRoutes = (app) => {
 
   //rest api - dùng web sử dụng các method (CRUD)
   //GET(R), POST (C), PUT (U), DELETE (D)
-  router.post("/login", authController.handleLogin);
-  // router.post("/register", authController.handleRegister);
+  router.post("/auth/login", authController.handleLogin);
+  router.post("/auth/register", authController.handleRegister);
   // router.post("/logout", authController.handleLogout);
   // router.post("/changePassword", authController.changePassword);
 

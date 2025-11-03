@@ -20,21 +20,14 @@ module.exports = {
       image: {
         type: Sequelize.STRING,
       },
-      description: {
-        type: Sequelize.STRING,
-      },
       phone: {
         type: Sequelize.STRING,
       },
       address: {
         type: Sequelize.STRING,
       },
-      title: {
-        type: Sequelize.STRING, // tiểu sử của người dùng
-      },
-      roleID: {
-        type: Sequelize.INTEGER,
-      
+      role: {
+        type: Sequelize.STRING,
       },
     
       createdAt: {

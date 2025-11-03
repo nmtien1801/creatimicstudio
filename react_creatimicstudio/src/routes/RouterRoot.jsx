@@ -26,13 +26,14 @@ import ChangePassStudent from "../adminPages/system/ChangePassStudent.jsx";
 import ChangePassTC from "../adminPages/system/ChangePassTC.jsx";
 import Account from "../adminPages/system/Account.jsx";
 import Login from "../adminPages/auth/Login.jsx";
+import Register from "../adminPages/auth/Register.jsx";
 
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated = useSelector((state) => state.auth?.isAuthenticated);
 
-  // if (!isAuthenticated) {
-  //   return <Navigate to="/login" replace />;
-  // }
+  if (isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
 
   return children;
 };
@@ -43,6 +44,7 @@ function RouterRoot() {
       <Routes>
         {/* public route */}
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
         {/* private route */}
         <Route
