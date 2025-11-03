@@ -7,32 +7,31 @@ import {
 } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import AuthenticatedLayout from "../components/AuthenticatedLayout";
-import Dashboard from "../pages/system/Dashboard";
-import ScheduleMonth from "../pages/schedule/Schedule_teach_month.jsx";
-import Lookup from "../pages/schedule/Lookup.jsx";
-import ScheduleExamMonth from "../pages/schedule/Schedule_exam_month.jsx";
-import TimetableClass from "../pages/schedule/Timetable_class.jsx";
-import Timetable from "../pages/schedule/Timetable.jsx";
-import Lesson from "../pages/schedule/Lesson.jsx";
-import ScheduleDay from "../pages/schedule/Schedule_day.jsx";
-import FinalExam from "../pages/grades/FinalExam.jsx";
-import GraduationExam from "../pages/grades/GraduationExam.jsx";
-import LookUpFinalExam from "../pages/grades/LookupFinalExam.jsx";
-import LookUpGraduationExam from "../pages/grades/LookupGraduationExam.jsx";
-import PrintTranscript from "../pages/grades/PrintTranscript.jsx";
-import LearningResults from "../pages/result/LearningResults.jsx";
-import Notification from "../pages/notification/Notification.jsx";
-import ChangePassStudent from "../pages/system/ChangePassStudent.jsx";
-import ChangePassTC from "../pages/system/ChangePassTC.jsx";
-import Account from "../pages/system/Account.jsx";
-import Home from "../pages/auth/Home.jsx";
-import Login from "../pages/auth/Login.jsx";
+import Dashboard from "../adminPages/system/Dashboard";
+import ScheduleMonth from "../adminPages/schedule/Schedule_teach_month.jsx";
+import Lookup from "../adminPages/schedule/Lookup.jsx";
+import ScheduleExamMonth from "../adminPages/schedule/Schedule_exam_month.jsx";
+import TimetableClass from "../adminPages/schedule/Timetable_class.jsx";
+import Timetable from "../adminPages/schedule/Timetable.jsx";
+import Lesson from "../adminPages/schedule/Lesson.jsx";
+import ScheduleDay from "../adminPages/schedule/Schedule_day.jsx";
+import FinalExam from "../adminPages/grades/FinalExam.jsx";
+import GraduationExam from "../adminPages/grades/GraduationExam.jsx";
+import LookUpFinalExam from "../adminPages/grades/LookupFinalExam.jsx";
+import LookUpGraduationExam from "../adminPages/grades/LookupGraduationExam.jsx";
+import PrintTranscript from "../adminPages/grades/PrintTranscript.jsx";
+import LearningResults from "../adminPages/result/LearningResults.jsx";
+import Notification from "../adminPages/notification/Notification.jsx";
+import ChangePassStudent from "../adminPages/system/ChangePassStudent.jsx";
+import ChangePassTC from "../adminPages/system/ChangePassTC.jsx";
+import Account from "../adminPages/system/Account.jsx";
+import Login from "../adminPages/auth/Login.jsx";
 
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated = useSelector((state) => state.auth?.isAuthenticated);
 
   // if (!isAuthenticated) {
-  //   return <Navigate to="/home" replace />;
+  //   return <Navigate to="/login" replace />;
   // }
 
   return children;
@@ -43,7 +42,6 @@ function RouterRoot() {
     <Router>
       <Routes>
         {/* public route */}
-        <Route path="/home" element={<Home />} />
         <Route path="/login" element={<Login />} />
 
         {/* private route */}
@@ -85,7 +83,7 @@ function RouterRoot() {
           {/* Notification */}
           <Route path="notification" element={<Notification />} />
         </Route>
-        <Route path="*" element={<Navigate to="/home" replace />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </Router>
   );

@@ -39,7 +39,7 @@ const LoginForm = () => {
 
                     <div className="flex items-center justify-center space-x-3 mb-6">
                         <div className="flex-grow border-t border-gray-300 max-w-[40px]"></div>
-                        <h1 className="text-xl text-gray-700 font-light tracking-wide">Login Form</h1>
+                        <h1 className="text-xl text-gray-700 font-light tracking-wide">Đăng nhập</h1>
                         <div className="flex-grow border-t border-gray-300 max-w-[40px]"></div>
                     </div>
                 </div>
@@ -83,14 +83,6 @@ const LoginForm = () => {
                         </button>
                         <button
                             type="button"
-                            className="w-[160px] py-2 text-sm text-black border border-gray-300 bg-white hover:bg-gray-50 transition duration-150 rounded-sm"
-                            // Tùy chọn: Thêm sự kiện onClick để điều hướng hoặc mở modal
-                            onClick={() => console.log('Chuyển đến trang Đăng ký đóng học phí')}
-                        >
-                            Đăng ký đóng học phí
-                        </button>
-                        <button
-                            type="button"
                             className="w-[70px] py-2 text-sm text-black border border-gray-300 bg-white hover:bg-gray-50 transition duration-150 rounded-sm"
                             // Tùy chọn: Thêm sự kiện onClick để điều hướng quay lại
                             onClick={() => console.log('Quay lại trang trước')}
@@ -112,7 +104,7 @@ const LoginForm = () => {
 
                 {/* Phần Footer */}
                 <div className="text-center">
-                    <h2 className="text-lg text-gray-600 font-light tracking-widest mb-1">HOC VIEN CAN BO</h2>
+                    <h2 className="text-lg text-gray-600 font-light tracking-widest mb-1">CREATIMICSTUDIO</h2>
                     <p className="text-xs text-gray-500">
                         &copy;{new Date().getFullYear()} All Rights Reserved. Privacy and Terms
                     </p>

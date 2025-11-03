@@ -1,26 +1,27 @@
+require("dotenv").config();
 import express from "express";
-require("dotenv").config(); // đọc file .env
+// const connectDB = require("./config/db.config");
+
+// Routers
 import authApi from "./router/authApi";
-import configCORS from "./config/cors";
-// chatbox
-const http = require("http");
+// const corsMiddleware = require("./config/cors");
 
 const app = express();
-app.use(configCORS);
 
-// -> fix bug lưu img : request entity too large react
-app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ limit: "50mb", extended: true }));
+// app.use(corsMiddleware);
 
-//-------------------------------------------------------------------------------------
-// share localHost BE & FE
+app.use(express.json());
+
+app.use(express.urlencoded({ extended: true }));
+// connectDB();
+
 authApi(app);
 
 app.use((req, res) => {
-  return res.send("404 not found");
+  res.status(404).send("404 Not Found");
 });
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
-  console.log(`>>> jwt backend is running on the port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });

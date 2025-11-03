@@ -1,25 +1,42 @@
 {
+  "name": "nodejs_creatimicstudio",
+  "version": "1.0.0",
+  "description": "\"# nodejs_creatimicstudio\"",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon --exec npx babel-node src/server.js"
+    "start": "nodemon --exec babel-node ./src/server.js",
+    "dev": "nodemon ./src/server.js"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
   "dependencies": {
-    "@babel/core": "7.15.4",
-    "@babel/node": "7.15.4",
-    "@babel/preset-env": "7.15.4",
-    "bcryptjs": "2.4.3",
-    "bluebird": "3.7.2",
-    "body-parser": "1.19.1",
+    "@babel/cli": "^7.28.0",
+    "@babel/core": "^7.28.0",
+    "@babel/eslint-parser": "^7.28.0",
+    "@babel/node": "^7.28.0",
+    "@babel/preset-env": "^7.28.5",
+    "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
-    "dotenv": "^10.0.0",
-    "express": "^4.17.2",
+    "crypto": "^1.0.1",
+    "dotenv": "^17.0.0",
+    "express": "^5.1.0",
+    "firebase-admin": "^13.4.0",
+    "googleapis": "^157.0.0",
     "jsonwebtoken": "^9.0.2",
     "lodash": "4.17.21",
+    "moment": "^2.30.1",
+    "mongoose": "^8.16.1",
     "mysql2": "2.3.3",
-    "nodemon": "2.0.15",
+    "nodemailer": "^7.0.5",
+    "nodemon": "^3.1.10",
+    "openai": "^5.12.2",
     "pg": "^8.16.3",
+    "qs": "^6.14.0",
     "sequelize": "6.13.0",
     "sequelize-cli": "^6.6.2",
-    "socket.io": "^4.8.1"
+    "xlsx": "^0.18.5"
   }
 }

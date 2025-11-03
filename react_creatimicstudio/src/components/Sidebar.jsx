@@ -50,7 +50,7 @@ export default function SlideBar({ isSidebarOpen }) {
               <div className="flex items-center gap-3">
                 <img src="/logo.png" alt="logo" className="w-8 h-8 object-contain" />
                 <span className="font-semibold text-lg whitespace-nowrap">
-                  HOC VIEN CAN BO
+                  CREATIMICSTUDIO
                 </span>
               </div>
             </div>
