@@ -18,7 +18,6 @@ const api = axios.create({
 axiosRetry(api, {
     retries: 2, // Số lần retry tối đa
     retryDelay: (retryCount) => {
-        console.log(`Retry attempt: ${retryCount}`);
         return retryCount * 100; // Thời gian delay giữa các lần retry (ms)
     },
     retryCondition: (error) => {
@@ -29,7 +28,7 @@ axiosRetry(api, {
 
 // 🧩 Interceptor request
 api.interceptors.request.use((config) => {
-    const token = Cookies.get("accessToken");
+    const token = Cookies.get("fr");
 
     if (token) {
         config.headers["Authorization"] = `Bearer ${token}`;
@@ -46,8 +45,6 @@ api.interceptors.response.use(
         switch (status) {
             case 401: {
                 const path = window.location.pathname;
-                console.log('ssssssss', path);
-
                 if (
                     path === "/" ||
                     path === "/login" ||
@@ -57,7 +54,7 @@ api.interceptors.response.use(
                     console.warn("401 on auth page, skip refresh");
                     return Promise.reject(error);
                 }
-                // window.location.href = "/login";
+                window.location.href = "/login";
                 return Promise.reject(error);
             }
 
@@ -69,7 +66,7 @@ api.interceptors.response.use(
                 const res = await api.post("/auth/refreshToken");
                 const newAccessToken = res.DT.accessToken;
 
-                Cookies.set("accessToken", newAccessToken);
+                Cookies.set("fr", newAccessToken);
 
                 const config = error.config;
                 config.headers["Authorization"] = `Bearer ${newAccessToken}`;

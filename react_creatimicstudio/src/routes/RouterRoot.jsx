@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -27,24 +27,55 @@ import ChangePassTC from "../adminPages/system/ChangePassTC.jsx";
 import Account from "../adminPages/system/Account.jsx";
 import Login from "../adminPages/auth/Login.jsx";
 import Register from "../adminPages/auth/Register.jsx";
+import LoadingSpinner from "../components/LoadingSpinner.jsx";
+import { GetAccount } from "../redux/authSlice";
 
 const ProtectedRoute = ({ children }) => {
-  const isAuthenticated = useSelector((state) => state.auth?.isAuthenticated);
+  const { userInfo, isLoading } = useSelector((state) => state.auth);
 
-  if (isAuthenticated) {
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
+  if (!userInfo || Object.keys(userInfo).length === 0) {
     return <Navigate to="/login" replace />;
   }
 
   return children;
 };
 
+const PublicRoute = ({ children }) => {
+  const { userInfo, isLoading } = useSelector((state) => state.auth);
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
+  if (userInfo && Object.keys(userInfo).length > 0) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return children;
+};
+
 function RouterRoot() {
+  const dispatch = useDispatch();
+  const { userInfo, isLoading } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (!isLoading && (!userInfo || Object.keys(userInfo).length === 0)) {
+      dispatch(GetAccount());
+    }
+  }, [dispatch, isLoading, userInfo]);
+
+  console.log('userInfo ', userInfo);
+  
   return (
     <Router>
       <Routes>
         {/* public route */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+        <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
 
         {/* private route */}
         <Route
@@ -61,7 +92,6 @@ function RouterRoot() {
           <Route path="change-pass-student" element={<ChangePassStudent />} />
           <Route path="change-pass-tc" element={<ChangePassTC />} />
           <Route path="account" element={<Account />} />
-
 
           {/* route schedule */}
           <Route path="scheduleMonth" element={<ScheduleMonth />} />

@@ -62,15 +62,15 @@ const checkUserJwt = async (req, res, next) => {
   let cookies = req.cookies;
   let tokenFromHeader = extractToken(req);
 
-  if ((cookies && cookies.accessToken) || tokenFromHeader) {
+  if ((cookies && cookies.fr) || tokenFromHeader) {
     // bug vừa vào đã check quyền xác thực khi chưa login của Context
     let accessToken =
-      cookies && cookies.accessToken ? cookies.accessToken : tokenFromHeader;
+      cookies && cookies.fr ? cookies.fr : tokenFromHeader;
     let decoded = verifyToken(accessToken);
 
     if (decoded && decoded !== "TokenExpiredError") {
       req.user = decoded; // gán thêm .user(data cookie) vào req BE nhận từ FE
-      req.accessToken = accessToken; // gán thêm .token(data cookie) vào req BE nhận từ FE
+      req.fr = accessToken; // gán thêm .token(data cookie) vào req BE nhận từ FE
       req.refreshToken = cookies.refreshToken; // gán thêm .token(data cookie) vào req BE nhận từ FE
       next();
     } else if (decoded === "TokenExpiredError") {
@@ -106,41 +106,9 @@ const checkUserJwt = async (req, res, next) => {
   }
 };
 
-// middleware kiểm tra quyền truy cập
-const checkUserPermission = (req, res, next) => {
-  if (nonSecurePaths.includes(req.path) || req.path === "/api/account")
-    return next();
-
-  if (!req.user)
-    return res.status(401).json({
-      EC: -1,
-      DT: "",
-      EM: "Not authenticated",
-    });
-
-  const { email, groupWithRole } = req.user;
-  const roles = groupWithRole?.Roles || [];
-  const currentUrl = req.path;
-
-  const canAccess = roles.some(
-    (r) => r.url === currentUrl || currentUrl.includes(r.url)
-  );
-
-  if (!canAccess) {
-    return res.status(403).json({
-      EC: -1,
-      DT: "",
-      EM: `You don't have permission to access this resource`,
-    });
-  }
-
-  next();
-};
-
 export {
   createToken,
   verifyToken,
   checkUserJwt,
-  checkUserPermission,
   verifyRefreshToken,
 };

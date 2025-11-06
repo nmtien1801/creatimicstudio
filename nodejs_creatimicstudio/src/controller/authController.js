@@ -1,5 +1,5 @@
 import authService from "../service/authService.js";
-import { createToken, verifyRefreshToken } from "../middleware/jwtAction";
+import { createToken, verifyRefreshToken, verifyToken } from "../middleware/jwtAction";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -10,7 +10,7 @@ const handleLogin = async (req, res) => {
     const { accessToken, refreshToken } = createToken(data.DT);
 
     // set cookie
-    res.cookie("accessToken", accessToken, {
+    res.cookie("fr", accessToken, {
       httpOnly: false, // chỉ cho phép server đọc cookie, không cho client
       secure: false,
       maxAge: +process.env.JWT_REFRESH_EXPIRES_TOKEN,
@@ -78,11 +78,11 @@ const handleRefreshToken = async (req, res) => {
   });
 
   // set cookie mới
-  res.cookie("accessToken", accessToken, {
-      httpOnly: false, // chỉ cho phép server đọc cookie, không cho client
-      secure: false,
-      maxAge: +process.env.JWT_REFRESH_EXPIRES_TOKEN,
-    });
+  res.cookie("fr", accessToken, {
+    httpOnly: false, // chỉ cho phép server đọc cookie, không cho client
+    secure: false,
+    maxAge: +process.env.JWT_REFRESH_EXPIRES_TOKEN,
+  });
   res.cookie("refreshToken", newRefreshToken, {
     httpOnly: true,
     secure: false,
@@ -96,8 +96,30 @@ const handleRefreshToken = async (req, res) => {
   });
 };
 
+const fetchAccount = async (req, res) => {
+  try {
+
+    let decoded = verifyToken(req.cookies.fr);
+
+    return res.status(200).json({
+      EM: "ok fetch context",
+      EC: 0,
+      DT: decoded,
+    });
+  } catch (error) {
+    console.error("Error in fetchAccount:", error);
+    return res.status(500).json({
+      EM: "Error from server",
+      EC: -1,
+      DT: "",
+    });
+  }
+}
+
+
 module.exports = {
   handleLogin,
   handleRegister,
-  handleRefreshToken
+  handleRefreshToken,
+  fetchAccount,
 };

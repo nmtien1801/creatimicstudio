@@ -13,6 +13,7 @@ const AuthRoutes = (app) => {
   router.post("/auth/login", authController.handleLogin);
   router.post("/auth/register", authController.handleRegister);
   router.post("/auth/refreshToken", authController.handleRefreshToken);
+  router.get("/auth/account", authController.fetchAccount);
 
   // router.post("/logout", authController.handleLogout);
   // router.post("/changePassword", authController.changePassword);

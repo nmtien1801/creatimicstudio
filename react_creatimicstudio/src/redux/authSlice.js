@@ -3,6 +3,7 @@ import ApiAuth from "../apis/ApiAuth.js";
 
 const initialState = {
   userInfo: {},
+  isLoading: false,
 };
 
 export const Login = createAsyncThunk(
@@ -21,6 +22,14 @@ export const Register = createAsyncThunk(
   }
 );
 
+export const GetAccount = createAsyncThunk(
+  "auth/GetAccount",
+  async (data, thunkAPI) => {
+    const response = await ApiAuth.GetAccountApi(data);
+    return response;
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -30,24 +39,44 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     // Login
     builder
-      .addCase(Login.pending, (state) => {})
+      .addCase(Login.pending, (state) => {
+        state.isLoading = true;
+      })
       .addCase(Login.fulfilled, (state, action) => {
+        state.isLoading = false;
         if (action.payload.EC === 0) {
           state.userInfo = action.payload.DT || {};
         }
       })
-      .addCase(Login.rejected, (state, action) => {});
+      .addCase(Login.rejected, (state, action) => {
+        state.isLoading = false;
+      });
 
     // Register
     builder
-      .addCase(Register.pending, (state) => {})
-      .addCase(Register.fulfilled, (state, action) => {})
-      .addCase(Register.rejected, (state, action) => {});
+      .addCase(Register.pending, (state) => { })
+      .addCase(Register.fulfilled, (state, action) => { })
+      .addCase(Register.rejected, (state, action) => { });
+
+    // GetAccount
+    builder
+      .addCase(GetAccount.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(GetAccount.fulfilled, (state, action) => {
+        state.isLoading = false;
+        if (action.payload.EC === 0) {
+          state.userInfo = action.payload.DT || {};
+        }
+      })
+      .addCase(GetAccount.rejected, (state, action) => {
+        state.isLoading = false;
+      });
   },
 });
 
 // Export actions
-export const {} = authSlice.actions;
+export const { } = authSlice.actions;
 
 // Export reducer
 export default authSlice.reducer;

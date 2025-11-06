@@ -18,10 +18,6 @@ app.use(cookieParser());
 
 authApi(app);
 
-app.use((req, res) => {
-  res.status(404).send("404 Not Found");
-});
-
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);

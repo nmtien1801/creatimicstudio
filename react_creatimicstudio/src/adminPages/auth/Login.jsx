@@ -18,7 +18,7 @@ const LoginForm = () => {
         };
         if (username && password) {
             let res = await dispatch(Login(body));
-            if (res && res.payload.EC === 0) {
+            if (res && res.payload && res.payload.EC === 0) {
                 navigate('/dashboard');
             }
         } else {
