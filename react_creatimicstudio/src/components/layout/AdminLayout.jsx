@@ -3,10 +3,10 @@ import {
     Outlet,
 } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import SlideBar from "./Sidebar";
-import Header from "./Header";
+import SlideBar from "../Sidebar";
+import Header from "../header/HeaderAdmin";
 
-function AuthenticatedLayout() {
+function AdminLayout() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
     return (
@@ -45,4 +45,4 @@ function AuthenticatedLayout() {
     );
 }
 
-export default AuthenticatedLayout;
+export default AdminLayout;

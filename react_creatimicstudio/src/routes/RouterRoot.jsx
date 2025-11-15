@@ -6,7 +6,8 @@ import {
   Navigate,
 } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import AuthenticatedLayout from "../components/AuthenticatedLayout";
+import AdminLayout from "../components/layout/AdminLayout.jsx";
+import ClientLayout from "../components/layout/ClientLayout.jsx";
 import Dashboard from "../adminPages/system/Dashboard";
 import ScheduleMonth from "../adminPages/schedule/Schedule_teach_month.jsx";
 import Lookup from "../adminPages/schedule/Lookup.jsx";
@@ -29,8 +30,11 @@ import Login from "../adminPages/auth/Login.jsx";
 import Register from "../adminPages/auth/Register.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import { GetAccount } from "../redux/authSlice";
+import Cookies from "js-cookie";
 
-const ProtectedRoute = ({ children }) => {
+import Home from "../clientPages/TrangChu.jsx";
+
+const ProtectedRoute = ({ children, role }) => {
   const { userInfo, isLoading } = useSelector((state) => state.auth);
 
   if (isLoading) {
@@ -40,6 +44,8 @@ const ProtectedRoute = ({ children }) => {
   if (!userInfo || Object.keys(userInfo).length === 0) {
     return <Navigate to="/login" replace />;
   }
+
+  if (role && userInfo.role !== role) return <Navigate to="/" replace />;
 
   return children;
 };
@@ -60,16 +66,18 @@ const PublicRoute = ({ children }) => {
 
 function RouterRoot() {
   const dispatch = useDispatch();
-  const { userInfo, isLoading } = useSelector((state) => state.auth);
+  const { userInfo, isLoading, hasCheckedAuth } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    if (!isLoading && (!userInfo || Object.keys(userInfo).length === 0)) {
+    const token = Cookies.get("fr");
+
+    if (token && !hasCheckedAuth && !isLoading) {
       dispatch(GetAccount());
     }
-  }, [dispatch, isLoading, userInfo]);
+  }, [dispatch, hasCheckedAuth, isLoading]);
 
   console.log('userInfo ', userInfo);
-  
+
   return (
     <Router>
       <Routes>
@@ -77,44 +85,51 @@ function RouterRoot() {
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
 
+        {/* Client routes */}
+        <Route path="/" element={<ClientLayout />}>
+          <Route index element={<Navigate to="home" replace />} />
+          <Route path="home" element={<Home />} />
+        </Route>
+
         {/* private route */}
         <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <AuthenticatedLayout />
-            </ProtectedRoute>
-          }
-        >
-          {/* route system */}
-          <Route index element={<Navigate to="dashboard" replace />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="change-pass-student" element={<ChangePassStudent />} />
-          <Route path="change-pass-tc" element={<ChangePassTC />} />
-          <Route path="account" element={<Account />} />
+            path="/"
+            element={
+              <ProtectedRoute role="admin">
+                <AdminLayout />
+              </ProtectedRoute>
+            }
+          >
+            {/* route system */}
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="change-pass-student" element={<ChangePassStudent />} />
+            <Route path="change-pass-tc" element={<ChangePassTC />} />
+            <Route path="account" element={<Account />} />
 
-          {/* route schedule */}
-          <Route path="scheduleMonth" element={<ScheduleMonth />} />
-          <Route path="lookup" element={<Lookup />} />
-          <Route path="schedule-exam-month" element={<ScheduleExamMonth />} />
-          <Route path="timetable-class" element={<TimetableClass />} />
-          <Route path="timetable" element={<Timetable />} />
-          <Route path="lesson" element={<Lesson />} />
-          <Route path="schedule-day" element={<ScheduleDay />} />
+            {/* route schedule */}
+            <Route path="scheduleMonth" element={<ScheduleMonth />} />
+            <Route path="lookup" element={<Lookup />} />
+            <Route path="schedule-exam-month" element={<ScheduleExamMonth />} />
+            <Route path="timetable-class" element={<TimetableClass />} />
+            <Route path="timetable" element={<Timetable />} />
+            <Route path="lesson" element={<Lesson />} />
+            <Route path="schedule-day" element={<ScheduleDay />} />
 
-          {/* route grades */}
-          <Route path="final-exam" element={<FinalExam />} />
-          <Route path="graduation-exam" element={<GraduationExam />} />
-          <Route path="look-up-final-exam" element={<LookUpFinalExam />} />
-          <Route path="look-up-graduation-exam" element={<LookUpGraduationExam />} />
-          <Route path="print-transcript" element={<PrintTranscript />} />
+            {/* route grades */}
+            <Route path="final-exam" element={<FinalExam />} />
+            <Route path="graduation-exam" element={<GraduationExam />} />
+            <Route path="look-up-final-exam" element={<LookUpFinalExam />} />
+            <Route path="look-up-graduation-exam" element={<LookUpGraduationExam />} />
+            <Route path="print-transcript" element={<PrintTranscript />} />
 
-          {/* route result */}
-          <Route path="learning-results" element={<LearningResults />} />
+            {/* route result */}
+            <Route path="learning-results" element={<LearningResults />} />
 
-          {/* Notification */}
-          <Route path="notification" element={<Notification />} />
-        </Route>
+            {/* Notification */}
+            <Route path="notification" element={<Notification />} />
+          </Route>
+
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </Router>

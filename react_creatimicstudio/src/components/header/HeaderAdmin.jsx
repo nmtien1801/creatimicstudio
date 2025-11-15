@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, Mail, User, ChevronDown, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 export default function Header({ toggleSidebar }) {
     const [showUserMenu, setShowUserMenu] = useState(false);
@@ -21,8 +22,8 @@ export default function Header({ toggleSidebar }) {
     }, []);
 
     const handleLogout = async () => {
-        // Chuyển hướng về trang đăng nhập
-        navigate('/home');
+        Cookies.remove("fr");
+        navigate('/login');
     }
 
     return (

@@ -10,9 +10,9 @@ export default function SlideBar({ isSidebarOpen }) {
   };
 
   const systemItems = [
-    { label: 'Trang chủ', path: '/dashboard' },
-    { label: 'Đổi mật khẩu học viên', path: '/change-pass-student' },
-    { label: 'Đổi mật khẩu TC', path: '/change-pass-tc' },
+    { label: 'Trang chủ', path: '/change-pass-tc' },
+    { label: 'Dashboard', path: '/dashboard' },
+    { label: 'Đổi mật khẩu', path: '/change-pass-student' },
     { label: 'Thông tin tài khoản', path: '/account' },
   ];
 
@@ -107,7 +107,7 @@ export default function SlideBar({ isSidebarOpen }) {
                   className={`w-full px-4 py-3 flex items-center gap-3 hover:bg-[#026aa8] transition-colors ${expandedMenu === 'schedule' ? 'bg-[#026aa8]' : ''}`}
                 >
                   <FileEdit className="w-5 h-5 flex-shrink-0" />
-                  <span className="flex-1 text-left">Lịch học</span>
+                  <span className="flex-1 text-left">Quản lý sản phẩm</span>
                   <ChevronDown className={`w-4 h-4 transition-transform ${expandedMenu === 'schedule' ? 'rotate-180' : ''}`} />
                 </button>
 
@@ -137,7 +137,7 @@ export default function SlideBar({ isSidebarOpen }) {
                   className={`w-full px-4 py-3 flex items-center gap-3 hover:bg-[#026aa8] transition-colors ${expandedMenu === 'grades' ? 'bg-[#026aa8]' : ''}`}
                 >
                   <BarChart3 className="w-5 h-5 flex-shrink-0" />
-                  <span className="flex-1 text-left">Tra cứu điểm</span>
+                  <span className="flex-1 text-left">Quản lý tin tức</span>
                   <ChevronDown className={`w-4 h-4 transition-transform ${expandedMenu === 'grades' ? 'rotate-180' : ''}`} />
                 </button>
 
@@ -170,7 +170,7 @@ export default function SlideBar({ isSidebarOpen }) {
                   }
                 >
                   <TrendingUp className="w-5 h-5 flex-shrink-0" />
-                  <span className="flex-1 text-left">Kết quả học tập</span>
+                  <span className="flex-1 text-left">Quản lý tuyển dụng</span>
                 </NavLink>
               </div>
 
@@ -181,7 +181,7 @@ export default function SlideBar({ isSidebarOpen }) {
                   className={`w-full px-4 py-3 flex items-center gap-3 hover:bg-[#026aa8] transition-colors ${expandedMenu === 'notifications' ? 'bg-[#026aa8]' : ''}`}
                 >
                   <Calendar className="w-5 h-5 flex-shrink-0" />
-                  <span className="flex-1 text-left">Thông báo</span>
+                  <span className="flex-1 text-left">Thông khách hàng</span>
                   <ChevronDown className={`w-4 h-4 transition-transform ${expandedMenu === 'notifications' ? 'rotate-180' : ''}`} />
                 </button>
 

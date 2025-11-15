@@ -4,6 +4,7 @@ import ApiAuth from "../apis/ApiAuth.js";
 const initialState = {
   userInfo: {},
   isLoading: false,
+  hasCheckedAuth: false,
 };
 
 export const Login = createAsyncThunk(
@@ -64,13 +65,15 @@ const authSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(GetAccount.fulfilled, (state, action) => {
-        state.isLoading = false;
         if (action.payload.EC === 0) {
           state.userInfo = action.payload.DT || {};
         }
+        state.isLoading = false;
+        state.hasCheckedAuth = true;
       })
       .addCase(GetAccount.rejected, (state, action) => {
         state.isLoading = false;
+        state.hasCheckedAuth = true;
       });
   },
 });

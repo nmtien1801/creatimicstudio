@@ -45,16 +45,20 @@ api.interceptors.response.use(
         switch (status) {
             case 401: {
                 const path = window.location.pathname;
-                if (
-                    path === "/" ||
-                    path === "/login" ||
-                    path === "/register" ||
-                    path === "/forgot-password"
-                ) {
-                    console.warn("401 on auth page, skip refresh");
+                const publicPaths = ['/', '/login', '/register', '/forgot-password'];
+
+                // ✅ Nếu đang ở trang public, bỏ qua
+                if (publicPaths.includes(path)) {
                     return Promise.reject(error);
                 }
-                window.location.href = "/login";
+
+                // ✅ Chỉ redirect nếu KHÔNG phải request /account
+                const isAccountRequest = error.config?.url?.includes('/auth/account');
+
+                if (!isAccountRequest) {
+                    Cookies.remove("fr");
+                    window.location.href = "/login";
+                }
                 return Promise.reject(error);
             }
 
@@ -63,14 +67,21 @@ api.interceptors.response.use(
             }
 
             case 403: {
-                const res = await api.post("/auth/refreshToken");
-                const newAccessToken = res.DT.accessToken;
+                try {
+                    const res = await api.post("/auth/refreshToken");
+                    const newAccessToken = res.DT.accessToken;
 
-                Cookies.set("fr", newAccessToken);
+                    Cookies.set("fr", newAccessToken);
 
-                const config = error.config;
-                config.headers["Authorization"] = `Bearer ${newAccessToken}`;
-                return api.request(config);
+                    const config = error.config;
+                    config.headers["Authorization"] = `Bearer ${newAccessToken}`;
+                    return api.request(config);
+                } catch (e) {
+                    Cookies.remove("fr");
+                    window.location.href = "/login";
+                    return Promise.reject(error);
+                }
+
             }
 
             case 404: {
