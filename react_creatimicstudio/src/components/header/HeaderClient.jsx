@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { Menu, Search, Phone, ChevronDown } from "lucide-react";
+import { Menu, Search, Phone } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import MegaMenu from "../DanhMuc.jsx";
 
 export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOpen }) {
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Menu chính để tái sử dụng
+  // Menu chính tái sử dụng
   const menuItems = [
     { label: "TRANG CHỦ", path: "/home" },
     { label: "GIỚI THIỆU", path: "/about" },
@@ -19,13 +19,15 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
 
-      {/* Main Header */}
+      {/* MAIN HEADER */}
       <div className="w-full px-4 py-4 flex items-center justify-between gap-4">
-        {/* Logo */}
+
+        {/* LOGO */}
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg">
             <span className="text-white font-black text-xl">CS</span>
           </div>
+
           <div className="hidden sm:block">
             <h1 className="text-2xl font-black bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
               CREATIVE STUDIO
@@ -34,7 +36,7 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
           </div>
         </div>
 
-        {/* Search + MegaMenu + Search Button */}
+        {/* SEARCH + MEGA MENU */}
         <div className="flex-1 max-w-2xl mx-4 hidden md:flex rounded-2xl overflow-visible shadow-lg border-2 border-gray-100">
           <input
             type="text"
@@ -44,14 +46,12 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
             onChange={(e) => setSearchQuery(e.target.value)}
           />
           <MegaMenu categories={categories || []} />
-          <button
-            className="px-6 bg-gradient-to-r from-orange-500 to-pink-500 text-white hover:from-orange-600 hover:to-pink-600 transition-all flex items-center justify-center rounded-r-xl"
-          >
+          <button className="px-6 bg-gradient-to-r from-orange-500 to-pink-500 text-white hover:from-orange-600 hover:to-pink-600 transition-all flex items-center justify-center rounded-r-xl">
             <Search className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Contact */}
+        {/* CONTACT */}
         <div className="hidden lg:flex space-x-8 text-sm text-gray-600 items-center">
           <a href="tel:0372672396" className="flex items-center gap-2 hover:text-orange-600 transition-colors font-medium">
             <Phone className="w-4 h-4 text-orange-600" />
@@ -63,7 +63,7 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
           </a>
         </div>
 
-        {/* Mobile Menu Button */}
+        {/* MOBILE MENU BUTTON */}
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           className="relative p-3 bg-gradient-to-br from-orange-500 to-pink-500 text-white rounded-xl md:hidden hover:shadow-xl hover:scale-110 transition-all"
@@ -72,42 +72,61 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
         </button>
       </div>
 
-      {/* Desktop Navigation */}
+      {/* DESKTOP NAVIGATION */}
       <nav className="bg-gradient-to-r from-gray-800 via-gray-900 to-gray-800 hidden md:block">
         <div className="max-w-[1400px] mx-auto px-6">
           <div className="flex space-x-2">
-            {menuItems.map((item, i) => (
+
+            {menuItems.map((item) => (
               <NavLink
                 key={item.label}
                 to={item.path}
                 className={({ isActive }) =>
-                  `relative px-6 py-4 text-sm font-bold transition-all ${isActive ? "text-white" : "text-gray-300 hover:text-white"}`
+                  `relative px-6 py-4 text-sm font-bold transition-all group
+                  ${isActive ? "text-white" : "text-gray-300 hover:text-white"}`
                 }
               >
-                {item.label}
-                {i === 0 && (
-                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 to-pink-500"></div>
+
+                {({ isActive }) => (
+                  <>
+                    {item.label}
+
+                    {/* ACTIVE underline */}
+                    {isActive && (
+                      <div className="absolute bottom-0 left-0 right-0 h-1
+                                      bg-gradient-to-r from-orange-500 to-pink-500"></div>
+                    )}
+
+                    {/* HOVER underline (nhẹ) */}
+                    {!isActive && (
+                      <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/0
+                                      group-hover:bg-white/20 transition-all duration-300"></div>
+                    )}
+                  </>
                 )}
+
               </NavLink>
             ))}
+
           </div>
         </div>
       </nav>
 
-      {/* Mobile Navigation */}
+      {/* MOBILE DRAWER */}
       {isMobileMenuOpen && (
         <div className="md:hidden fixed inset-0 bg-black/50 z-50" onClick={() => setIsMobileMenuOpen(false)}>
+
           <div
             className="fixed top-0 right-0 w-3/4 max-w-sm h-full bg-white shadow-2xl p-6 overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Drawer Header */}
+            {/* DRAWER HEADER */}
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-2xl font-black text-orange-600">Menu</h3>
               <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 rounded hover:bg-gray-100 transition-colors">✕</button>
             </div>
 
-            {/* Mobile Menu Items */}
+            {/* MOBILE MENU ITEMS */}
             <nav>
               <ul className="space-y-2">
                 {menuItems.map((item) => (
@@ -115,7 +134,8 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
                     <NavLink
                       to={item.path}
                       className={({ isActive }) =>
-                        `block p-3 text-gray-800 font-bold hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors ${isActive ? "text-orange-600" : ""}`
+                        `block p-3 text-gray-800 font-bold hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors
+                         ${isActive ? "text-orange-600" : ""}`
                       }
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
@@ -126,9 +146,10 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
               </ul>
             </nav>
 
-            {/* Danh mục sản phẩm */}
+            {/* DANH MỤC SẢN PHẨM */}
             <div className="mt-8 pt-4 border-t">
               <h4 className="font-bold text-gray-800 mb-2">Danh mục sản phẩm</h4>
+
               <ul className="space-y-1">
                 {categories?.map((cat, index) => (
                   <li key={index}>
@@ -159,9 +180,11 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
                 ))}
               </ul>
             </div>
+
           </div>
         </div>
       )}
+
     </header>
   );
 }

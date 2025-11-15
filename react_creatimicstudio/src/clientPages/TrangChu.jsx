@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Phone, Truck, RefreshCw, MessageSquare, Tag, Star, Heart, Menu } from 'lucide-react';
+import ProductCard from '../components/product/ProductCard.jsx';
 
 const productsData = [
     { id: 1, name: "Micro thu âm BM-800", price: "990.000₫", oldPrice: "1.290.000₫", rating: 4.8, img: 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=400&h=400&fit=crop' },
@@ -19,81 +19,6 @@ const articlesData = [
     { title: "5 mẹo để Livestream chuyên nghiệp hơn", img: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600&h=400&fit=crop' },
     { title: "Soundcard là gì? Chọn loại nào tốt?", img: 'https://images.unsplash.com/photo-1545127398-14699f92334b?w=600&h=400&fit=crop' },
 ];
-
-const ProductCard = ({ product, isTopSeller = false }) => {
-    const [isWishlisted, setIsWishlisted] = useState(false);
-
-    return (
-        <div className={`group bg-white rounded-2xl overflow-hidden transition-all duration-500 ${isTopSeller
-            ? 'shadow-2xl hover:shadow-[0_20px_60px_rgba(249,115,22,0.3)] border-2 border-orange-400 hover:scale-[1.02]'
-            : 'shadow-lg hover:shadow-2xl hover:-translate-y-2'
-            }`}>
-            <div className={`relative overflow-hidden ${isTopSeller ? 'h-64 sm:h-80' : 'h-48 sm:h-56'}`}>
-                <img
-                    src={product.img}
-                    alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-                {/* Badge */}
-                {isTopSeller && (
-                    <div className="absolute top-3 left-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1">
-                        <Star className="w-3 h-3 fill-white" />
-                        TOP SELLER
-                    </div>
-                )}
-
-                {product.oldPrice && (
-                    <div className="absolute top-3 right-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
-                        -25%
-                    </div>
-                )}
-
-                {/* Wishlist Button */}
-                <button
-                    onClick={() => setIsWishlisted(!isWishlisted)}
-                    className="absolute top-3 left-3 w-9 h-9 bg-white/95 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 shadow-lg"
-                >
-                    <Heart className={`w-4 h-4 transition-colors ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
-                </button>
-            </div>
-
-            <div className="p-4 sm:p-5">
-                <h3 className="text-gray-800 font-bold mb-2 line-clamp-2 text-base sm:text-lg min-h-[48px] group-hover:text-orange-600 transition-colors">
-                    {product.name}
-                </h3>
-
-                {/* Rating */}
-                <div className="flex items-center gap-2 mb-3">
-                    <div className="flex items-center gap-1">
-                        {[...Array(5)].map((_, i) => (
-                            <Star key={i} className={`w-3 h-3 ${i < Math.floor(product.rating) ? 'fill-yellow-400 text-yellow-400' : 'fill-gray-200 text-gray-200'}`} />
-                        ))}
-                    </div>
-                    <span className="text-sm font-semibold text-gray-700">{product.rating}</span>
-                </div>
-
-                <div className="flex items-baseline gap-2 mb-4">
-                    <span className={`font-black text-xl sm:text-2xl ${isTopSeller ? 'bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent' : 'text-orange-600'
-                        }`}>
-                        {product.price}
-                    </span>
-                    {product.oldPrice && (
-                        <span className="text-sm text-gray-400 line-through">{product.oldPrice}</span>
-                    )}
-                </div>
-
-                <button className={`w-full py-2.5 sm:py-3 font-bold rounded-xl transition-all duration-300 ${isTopSeller
-                    ? 'bg-gradient-to-r from-orange-500 to-pink-500 text-white hover:shadow-xl hover:scale-105'
-                    : 'bg-orange-500 text-white hover:bg-orange-600 hover:shadow-lg'
-                    }`}>
-                    Mua ngay
-                </button>
-            </div>
-        </div>
-    );
-};
 
 const CategorySection = ({ title, products, bannerText, buttonLink, count, countText, isLoudspeaker = false }) => {
     return (
@@ -174,17 +99,6 @@ const ArticleCard = ({ article }) => {
     );
 };
 
-const ServiceCommitment = ({ icon: Icon, title, description }) => {
-    return (
-        <div className="group text-center p-6 bg-white rounded-2xl hover:shadow-xl transition-all duration-500 hover:-translate-y-2">
-            <div className="w-16 h-16 mx-auto bg-gradient-to-br from-orange-500 to-pink-500 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
-                <Icon className="w-8 h-8 text-white" />
-            </div>
-            <h4 className="text-base font-bold text-gray-900 mb-2">{title}</h4>
-            <p className="text-sm text-gray-600 leading-relaxed">{description}</p>
-        </div>
-    );
-};
 
 export default function TrangChu() {
     const [currentSlide, setCurrentSlide] = useState(0);
@@ -210,7 +124,6 @@ export default function TrangChu() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
-            {/* MAIN CONTENT */}
             <main className="pb-20 md:pb-8">
                 {/* Banner Slider */}
                 <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-8">
@@ -341,78 +254,6 @@ export default function TrangChu() {
                     </div>
                 </section>
             </main>
-
-            {/* FOOTER */}
-            <footer className="bg-gradient-to-br from-gray-900 to-gray-800 text-white mt-16">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
-                        <ServiceCommitment
-                            icon={Truck}
-                            title="GIAO HÀNG TOÀN QUỐC"
-                            description="Phục vụ giao hàng trên toàn quốc, đảm bảo nhanh chóng và đúng hẹn."
-                        />
-                        <ServiceCommitment
-                            icon={Tag}
-                            title="THANH TOÁN COD"
-                            description="An tâm khi nhận hàng - chỉ thanh toán khi đã kiểm tra sản phẩm."
-                        />
-                        <ServiceCommitment
-                            icon={MessageSquare}
-                            title="HỖ TRỢ 24/7"
-                            description="Luôn sẵn sàng tư vấn mọi thắc mắc về sản phẩm và dịch vụ."
-                        />
-                        <ServiceCommitment
-                            icon={RefreshCw}
-                            title="ĐỔI TRẢ TRONG 7 NGÀY"
-                            description="Hỗ trợ đổi trả miễn phí trong 7 ngày nếu sản phẩm lỗi."
-                        />
-                    </div>
-
-                    {/* Footer Info */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-8 border-t border-gray-700">
-                        <div>
-                            <div className="flex items-center gap-3 mb-4">
-                                <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg">
-                                    <span className="text-white font-black text-xl">CS</span>
-                                    <span className="text-white font-black text-xl">CS</span>
-                                </div>
-                                <span className="text-xl font-black">CREATIVE STUDIO</span>
-                            </div>
-                            <p className="text-sm text-gray-400 leading-relaxed mb-4">
-                                Địa chỉ uy tín cung cấp thiết bị thu âm, livestream chuyên nghiệp tại Việt Nam.
-                            </p>
-                        </div>
-
-                        <div>
-                            <h3 className="text-lg font-bold mb-4">Liên Hệ</h3>
-                            <ul className="space-y-3 text-sm text-gray-400">
-                                <li className="flex items-center gap-2">
-                                    <Phone className="w-4 h-4 text-orange-500" />
-                                    <span>037.267.2396</span>
-                                </li>
-                                <li className="flex items-center gap-2">
-                                    <Phone className="w-4 h-4 text-orange-500" />
-                                    <span>034.757.7034</span>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div>
-                            <h3 className="text-lg font-bold mb-4">Chính Sách</h3>
-                            <ul className="space-y-2 text-sm text-gray-400">
-                                <li><a href="#" className="hover:text-orange-500 transition-colors">Chính sách bảo hành</a></li>
-                                <li><a href="#" className="hover:text-orange-500 transition-colors">Chính sách đổi trả</a></li>
-                                <li><a href="#" className="hover:text-orange-500 transition-colors">Điều khoản sử dụng</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Copyright Bar */}
-                <div className="bg-gray-950 text-center py-4 text-sm text-gray-500">
-                    © 2025 Creative Studio. All rights reserved. Designed with ❤️
-                </div>
-            </footer>
         </div>
     );
 }

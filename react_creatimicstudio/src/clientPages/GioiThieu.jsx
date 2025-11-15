@@ -1,48 +1,19 @@
 import React from 'react';
 import { Aperture, Mic2, Heart, TrendingUp, Zap, Users, Shield, Lightbulb, Smile } from 'lucide-react';
 
-// --- Components Con Đã Chỉnh Sửa ---
-
-const VisionMissionCard = ({ title, content, isVision = false }) => (
-    <div className={`
-        p-6 sm:p-8 rounded-3xl transition-all duration-500 flex flex-col h-full
-        ${isVision 
-            ? 'bg-white shadow-xl hover:shadow-2xl border-t-4 border-orange-500' // Tầm Nhìn: Nền trắng, viền Cam
-            : 'bg-gray-50 border border-gray-200 hover:shadow-lg border-t-4 border-pink-500' // Sứ Mệnh: Nền xám nhạt, viền Hồng
-        }
-    `}>
-        {/* Tiêu đề & Icon */}
-        <div className="flex items-center mb-4">
-            {isVision 
-                ? <Mic2 className="w-8 h-8 mr-3 text-orange-600" /> 
-                : <Heart className="w-8 h-8 mr-3 text-pink-600" />
-            }
-            <h3 className="text-3xl font-black text-gray-900">{title}</h3>
-        </div>
-
-        {/* Nội dung */}
-        <p className="text-gray-700 leading-relaxed mb-6 flex-grow">{content}</p>
-        
-        {/* Placeholder cho ảnh minh họa - Đặt ở cuối card để không phá vỡ bố cục */}
-        <div className="mt-4 h-48 w-full rounded-xl bg-gray-200 border-2 border-dashed border-gray-300 flex items-center justify-center text-center text-sm text-gray-500">
-            [Ảnh minh họa liên quan đến Studio, Podcast hoặc Không gian làm việc]
-        </div>
-    </div>
-);
-
 const CoreValueItem = ({ value, color, Icon, index }) => (
     <div className="flex items-center mb-6 last:mb-0 group cursor-pointer">
         <div className={`w-12 h-12 flex items-center justify-center rounded-full text-white font-black text-xl transition-all duration-300 shadow-lg 
-            ${color === 'yellow' ? 'bg-yellow-500 group-hover:bg-yellow-600' : 
-             color === 'pink' ? 'bg-pink-500 group-hover:bg-pink-600' : 
-             'bg-purple-500 group-hover:bg-purple-600'}`}>
+            ${color === 'yellow' ? 'bg-yellow-500 group-hover:bg-yellow-600' :
+                color === 'pink' ? 'bg-pink-500 group-hover:bg-pink-600' :
+                    'bg-purple-500 group-hover:bg-purple-600'}`}>
             <Icon className="w-6 h-6" />
         </div>
         <div className="ml-4 p-3 border-b-2 border-dashed transition-all duration-300 flex-1"
             style={{ borderColor: color === 'yellow' ? '#FBBF24' : color === 'pink' ? '#EC4899' : '#A855F7' }}>
-            <span className={`text-lg font-semibold transition-colors duration-300 ${color === 'yellow' ? 'text-yellow-700 group-hover:text-yellow-900' : 
-             color === 'pink' ? 'text-pink-700 group-hover:text-pink-900' : 
-             'text-purple-700 group-hover:text-purple-900'}`}>
+            <span className={`text-lg font-semibold transition-colors duration-300 ${color === 'yellow' ? 'text-yellow-700 group-hover:text-yellow-900' :
+                color === 'pink' ? 'text-pink-700 group-hover:text-pink-900' :
+                    'text-purple-700 group-hover:text-purple-900'}`}>
                 {value}
             </span>
         </div>
@@ -66,27 +37,7 @@ const About = () => {
     return (
         <div className="min-h-screen bg-white">
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
-                
-                {/* Tiêu đề trang - Dùng màu chủ đạo Cam/Hồng */}
-                <h1 className="text-5xl md:text-6xl font-black text-center mb-16 sm:mb-20 
-                    bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
-                    CHÚNG TÔI LÀ AI?
-                </h1>
-
-                {/* --- 1. TẦM NHÌN & SỨ MỆNH (ĐÃ SỬA BỐ CỤC) --- */}
-                <section className="mb-20 sm:mb-28">
-                    <h2 className="text-4xl lg:text-5xl font-black text-center mb-12 text-gray-800">
-                        TẦM NHÌN <span className="text-orange-600">&</span> SỨ MỆNH
-                    </h2>
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-                        <VisionMissionCard title="TẦM NHÌN" content={vision} isVision={true} />
-                        <VisionMissionCard title="SỨ MỆNH" content={mission} isVision={false} />
-                    </div>
-                </section>
-
-                <hr className="my-16 sm:my-24 border-dashed border-gray-300" />
-                
-                {/* --- 2. CÂU CHUYỆN THƯƠNG HIỆU --- */}
+                {/* --- 1. CÂU CHUYỆN THƯƠNG HIỆU --- */}
                 <section className="mb-20 sm:mb-28">
                     <h2 className="text-4xl font-black text-gray-800 mb-10 text-center">
                         <span className="text-orange-600">CÂU CHUYỆN</span> THƯƠNG HIỆU
@@ -109,37 +60,68 @@ const About = () => {
                     </div>
                 </section>
 
-                <hr className="my-16 sm:my-24 border-dashed border-gray-300" />
+                <hr className="my-12 sm:my-20 border-dashed border-gray-300" />
+
+                {/* --- 2. TẦM NHÌN & SỨ MỆNH — Layout Sole, Không dùng Card cũ --- */}
+                <section className="mb-20 sm:mb-28 relative">
+                    <div className="relative rounded-3xl overflow-hidden shadow-2xl p-10 sm:p-14 min-h-[520px] flex flex-col">
+                        {/* Background ảnh mờ */}
+                        <div className="absolute inset-0">
+                            <img
+                                src="/images/studio-bg.jpg"
+                                alt="studio"
+                                className="w-full h-full object-cover opacity-25 blur-[2px]"
+                            />
+                        </div>
+                        {/* Overlay sáng */}
+                        <div className="absolute inset-0 bg-white/50 backdrop-blur-md"></div>
+
+                        {/* Nội dung */}
+                        <div className="relative z-10 flex flex-col justify-between h-full">
+                            {/* Vision (trái trên) */}
+                            <div className="max-w-2xl">
+                                <h3 className="text-3xl font-black text-orange-600 mb-4 flex items-center">
+                                    <Mic2 className="w-9 h-9 mr-3" />
+                                    TẦM NHÌN
+                                </h3>
+                                <p className="text-gray-800 text-lg leading-relaxed">
+                                    {vision}
+                                </p>
+                            </div>
+                            {/* Mission (phải dưới) */}
+                            <div className="max-w-2xl self-end text-right mt-12">
+                                <h3 className="text-3xl font-black text-pink-600 mb-4 flex items-center justify-end">
+                                    SỨ MỆNH
+                                    <Heart className="w-9 h-9 ml-3" />
+                                </h3>
+                                <p className="text-gray-800 text-lg leading-relaxed">
+                                    {mission}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <hr className="my-12 sm:my-20 border-dashed border-gray-300" />
 
                 {/* --- 3. LĨNH VỰC HOẠT ĐỘNG (Dùng card nổi bật) --- */}
                 <section className="mb-20 sm:mb-28">
                     <h2 className="text-4xl font-black text-gray-800 mb-10 text-center">
-                        <span className="text-pink-600">LĨNH VỰC</span> HOẠT ĐỘNG CHÍNH
+                        <span className="text-orange-600">LĨNH VỰC</span> HOẠT ĐỘNG
                     </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-                        <div className="text-lg text-gray-700 leading-relaxed p-6 bg-orange-50 rounded-2xl shadow-lg border-l-4 border-orange-500">
-                            <p className="font-bold text-xl mb-4 text-orange-700">Cung cấp Thiết bị & Dịch vụ</p>
-                            <ul className="list-disc list-inside space-y-2">
-                                <li>Cung cấp **thiết bị thu âm chính hãng** (Micro, Soundcard, Tai nghe).</li>
-                                <li>Dịch vụ **cho thuê micro**, phục vụ podcast, voice talent và hát live.</li>
-                            </ul>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+                        <div className="text-lg text-gray-700 leading-relaxed p-4 md:p-0">
+                            <p className="mb-4">
+                                Chúng tôi cung cấp thiết bị thu âm chính hãng và dịch vụ cho thuê micro, phục vụ podcast, voice talent và hát live. Đồng thời cung cấp không gian quay podcast, TVC và hỗ trợ sản xuất nội dung chất lượng cao.
+                            </p>
                         </div>
-                        
-                        <div className="text-lg text-gray-700 leading-relaxed p-6 bg-pink-50 rounded-2xl shadow-lg border-l-4 border-pink-500">
-                            <p className="font-bold text-xl mb-4 text-pink-700">Sản xuất Nội dung & Không gian</p>
-                            <ul className="list-disc list-inside space-y-2">
-                                <li>Cung cấp **không gian quay podcast/TVC** chuyên nghiệp.</li>
-                                <li>Hỗ trợ **sản xuất nội dung** chất lượng cao và dịch vụ setup.</li>
-                            </ul>
+                        <div className="h-96 w-full rounded-3xl overflow-hidden shadow-2xl bg-gray-200 flex items-center justify-center text-center text-gray-500">
+                            [Ảnh nội thất, thiết bị studio thực tế]
                         </div>
-                    </div>
-                    {/* Ảnh minh họa lĩnh vực */}
-                    <div className="mt-8 h-64 rounded-2xl bg-gray-200 shadow-xl flex items-center justify-center text-center text-gray-500">
-                        [Hình ảnh thiết bị âm thanh tượng trưng]
                     </div>
                 </section>
 
-                <hr className="my-16 sm:my-24 border-dashed border-gray-300" />
+                <hr className="my-12 sm:my-20 border-dashed border-gray-300" />
 
                 {/* --- 4. GIÁ TRỊ CỐT LÕI (Thiết kế độc đáo dùng màu chủ đạo) --- */}
                 <section className="mb-20 sm:mb-28">

@@ -1,177 +1,252 @@
-import React from 'react';
-import { Aperture, Mic2, Heart, TrendingUp, Zap, Users, Shield, Lightbulb, Smile } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import {Filter, ChevronLeft, ChevronRight } from 'lucide-react';
+import ProductCard from '../components/product/ProductCard.jsx';
 
-// --- Components Con ---
+// Chuyển đổi chuỗi giá tiếng Việt sang số để dễ dàng lọc và so sánh
+const priceToNumber = (priceString) => {
+    if (!priceString || priceString === "Liên hệ") return 0;
+    return parseInt(priceString.replace(/\./g, '').replace('₫', '').trim());
+};
 
-const VisionMissionCard = ({ title, content, isVision = false }) => (
-    <div className={`p-6 sm:p-8 rounded-3xl transition-all duration-500 ${isVision 
-        ? 'bg-white shadow-xl hover:shadow-2xl' 
-        : 'bg-gray-50 border border-gray-100 hover:shadow-lg'
-    }`}>
-        <div className={`flex items-center mb-4 ${isVision ? 'text-orange-600' : 'text-pink-600'}`}>
-            {isVision 
-                ? <Mic2 className="w-8 h-8 mr-3 p-1 bg-orange-100 rounded-full" /> 
-                : <Heart className="w-8 h-8 mr-3 p-1 bg-pink-100 rounded-full" />
-            }
-            <h3 className="text-2xl font-bold">{title}</h3>
-        </div>
-        <p className="text-gray-700 leading-relaxed">{content}</p>
-        
-        {/* Placeholder cho ảnh minh họa - Màu xám nhạt với khung nổi bật */}
-        <div className="mt-6 h-56 w-full rounded-2xl bg-gray-200 border-2 border-dashed border-gray-300 flex items-center justify-center text-center text-gray-500">
-            [Ảnh minh họa liên quan đến Studio, Podcast hoặc Không gian làm việc]
-        </div>
-    </div>
-);
+// Dữ liệu sản phẩm mẫu
+const rawProductsData = [
+    { id: 1, name: "Micro thu âm BM-800", price: "990.000₫", oldPrice: "1.290.000₫", rating: 4.8, img: 'https://picsum.photos/id/1015/400/400', subCategory: 'Micro thu âm' },
+    { id: 2, name: "Soundcard XOX K10", price: "1.250.000₫", oldPrice: "1.590.000₫", rating: 4.9, img: 'https://picsum.photos/id/1016/400/400', subCategory: 'Soundcard XOX' },
+    { id: 3, name: "Tai nghe kiểm âm OneOdio", price: "750.000₫", oldPrice: "950.000₫", rating: 4.8, img: 'https://picsum.photos/id/1018/400/400', subCategory: 'Tai nghe kiểm âm' },
+    { id: 4, name: "Combo Livestream Cao Cấp", price: "3.500.000₫", oldPrice: "4.200.000₫", rating: 5.0, img: 'https://picsum.photos/id/1020/400/400', subCategory: 'Combo Livestream' },
+    { id: 5, name: "Loa kiểm âm Edifier R1280DB", price: "2.800.000₫", oldPrice: "3.200.000₫", rating: 4.8, img: 'https://picsum.photos/id/1024/400/400', subCategory: 'Loa kiểm âm' },
+    { id: 6, name: "Phụ kiện chân đế Micro", price: "150.000₫", oldPrice: "190.000₫", rating: 4.9, img: 'https://picsum.photos/id/1027/400/400', subCategory: 'Chân đế Micro' },
+    { id: 7, name: "Micro cài áo không dây", price: "690.000₫", oldPrice: "890.000₫", rating: 4.9, img: 'https://picsum.photos/id/1031/400/400', subCategory: 'Micro cài áo' },
+    { id: 8, name: "Mixer Yamaha MG10XU", price: "5.500.000₫", oldPrice: "6.200.000₫", rating: 4.9, img: 'https://picsum.photos/id/1033/400/400', subCategory: 'Mixer Yamaha' },
+    { id: 9, name: "Hộp Livestream Mini", price: "450.000₫", oldPrice: "590.000₫", rating: 4.8, img: 'https://picsum.photos/id/1035/400/400', subCategory: 'Hộp Livestream' },
+    { id: 10, name: "Sản phẩm khác", price: "Liên hệ", oldPrice: "", rating: 5.0, img: 'https://picsum.photos/id/1037/400/400', subCategory: 'Khác' },
+];
 
-const CoreValueItem = ({ value, color, Icon, index }) => (
-    <div className="flex items-center mb-6 last:mb-0 group cursor-pointer">
-        <div className={`w-12 h-12 flex items-center justify-center rounded-full text-white font-black text-xl transition-all duration-300 shadow-lg 
-            ${color === 'yellow' ? 'bg-yellow-500 group-hover:bg-yellow-600' : 
-             color === 'pink' ? 'bg-pink-500 group-hover:bg-pink-600' : 
-             'bg-purple-500 group-hover:bg-purple-600'}`}>
-            <Icon className="w-6 h-6" />
-        </div>
-        <div className="ml-4 p-3 border-b-2 border-dashed transition-all duration-300 flex-1"
-            style={{ borderColor: color === 'yellow' ? '#FBBF24' : color === 'pink' ? '#EC4899' : '#A855F7' }}>
-            <span className={`text-lg font-semibold transition-colors duration-300 ${color === 'yellow' ? 'text-yellow-700 group-hover:text-yellow-900' : 
-             color === 'pink' ? 'text-pink-700 group-hover:text-pink-900' : 
-             'text-purple-700 group-hover:text-purple-900'}`}>
-                {value}
-            </span>
-        </div>
-    </div>
-);
+// Thêm trường priceNum
+const productsData = rawProductsData.map(p => ({
+    ...p,
+    priceNum: priceToNumber(p.price)
+}));
 
-const AboutUsSection = () => {
-    // Dữ liệu Tầm Nhìn & Sứ Mệnh
-    const vision = "CreatiMic Studio hướng tới trở thành đơn vị cung cấp giải pháp âm thanh và livestream đáng tin cậy hàng đầu tại Việt Nam – nơi khách hàng có thể tìm thấy mọi thứ họ cần, từ thiết bị, không gian thu hình đến dịch vụ set up, để sáng tạo nội dung dễ dàng và chuyên nghiệp hơn. Trong chặng đường dài hạn, chúng tôi không chỉ dừng lại ở phân phối, mà sẽ phát triển thương hiệu thiết bị thu âm riêng, mang dấu ấn Việt Nam vươn ra thị trường quốc tế.";
-    const mission = "CreatiMic Studio đồng hành cùng cộng đồng người sáng tạo nội dung âm thanh bằng việc mang đến trải nghiệm toàn diện – từ thiết bị thu âm, không gian, đến dịch vụ hỗ trợ. Chúng tôi không chỉ bán thiết bị, mà kiến tạo một hành trình all-in-one, nơi khách hàng được tận hưởng chất lượng âm thanh tốt nhất để tự tin lan tỏa giọng nói và thanh âm của mình.";
+// Top categories + subcategories
+const categories = {
+    'Micro': ['Micro thu âm', 'Micro cài áo', 'Micro Condenser'],
+    'Soundcard': ['Soundcard XOX', 'Soundcard Mini'],
+    'Tai nghe': ['Tai nghe kiểm âm', 'Tai nghe DJ'],
+    'Combo/Bộ': ['Combo Livestream', 'Combo Home Studio'],
+    'Loa': ['Loa kiểm âm', 'Loa Bluetooth'],
+    'Phụ kiện': ['Chân đế Micro', 'Hộp Livestream'],
+    'Mixer': ['Mixer Yamaha'],
+    'Khác': []
+};
 
-    // Dữ liệu Giá Trị Cốt Lõi
-    const coreValuesData = [
-        { value: "Chất lượng & Uy tín", color: 'yellow', Icon: Shield },
-        { value: "Tận tâm & Sáng tạo", color: 'orange', Icon: Lightbulb },
-        { value: "Tiện lợi & Dễ tiếp cận", color: 'pink', Icon: Zap },
-        { value: "Cập nhật & Phát triển", color: 'purple', Icon: TrendingUp },
-        { value: "Trách nhiệm & Tôn trọng khách hàng", color: 'indigo', Icon: Users },
-    ];
+const priceRanges = [
+    { value: 'all', label: 'Tất cả mức giá', min: 0, max: Infinity },
+    { value: 'under500k', label: 'Dưới 500.000₫', min: 0, max: 499999 },
+    { value: '500kto1m', label: '500.000₫ - 1.000.000₫', min: 500000, max: 1000000 },
+    { value: 'over1m', label: 'Trên 1.000.000₫', min: 1000001, max: Infinity },
+];
+
+// ================= FilterSidebar =================
+const FilterSidebar = ({ selectedCategory, filters, onFilterChange }) => {
+    const subCategories = selectedCategory && selectedCategory !== 'all' ? categories[selectedCategory] : [];
 
     return (
-        <div className="min-h-screen bg-white">
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
-                
-                {/* Tiêu đề trang - Dùng màu chủ đạo Cam/Hồng */}
-                <h1 className="text-5xl md:text-6xl font-black text-center mb-16 sm:mb-20 
-                    bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
-                    CHÚNG TÔI LÀ AI?
-                </h1>
+        <div className="w-full md:w-64 lg:w-72 p-6 bg-white rounded-2xl shadow-xl sticky top-4 self-start">
+            <h2 className="text-2xl font-black text-gray-800 mb-6 flex items-center gap-2">
+                <Filter className="w-5 h-5 text-orange-500" />
+                Bộ Lọc
+            </h2>
 
-                {/* --- 1. TẦM NHÌN & SỨ MỆNH --- */}
-                <section className="mb-20 sm:mb-28">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-                        <VisionMissionCard title="TẦM NHÌN" content={vision} isVision={true} />
-                        <VisionMissionCard title="SỨ MỆNH" content={mission} isVision={false} />
-                    </div>
-                </section>
-
-                <hr className="my-16 sm:my-24 border-dashed border-gray-300" />
-                
-                {/* --- 2. CÂU CHUYỆN THƯƠNG HIỆU --- */}
-                <section className="mb-20 sm:mb-28">
-                    <h2 className="text-4xl font-black text-gray-800 mb-10 text-center">
-                        <span className="text-orange-600">CÂU CHUYỆN</span> THƯƠNG HIỆU
-                    </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
-                        <div className="h-96 w-full rounded-3xl overflow-hidden shadow-2xl bg-gray-200 flex items-center justify-center text-center text-gray-500">
-                            [Ảnh nội thất, thiết bị studio thực tế]
-                        </div>
-                        <div className="text-lg text-gray-700 leading-relaxed p-4 md:p-0">
-                            <p className="mb-4">
-                                <span className="font-bold text-orange-600">CreatiMic Studio</span> ra đời từ niềm đam mê không giới hạn đối với âm thanh và sự sáng tạo nội dung. Chúng tôi hiểu rằng, trong thời đại số, giọng nói và thông điệp của bạn cần được truyền tải một cách hoàn hảo nhất.
-                            </p>
-                            <p className="mb-4">
-                                Khởi điểm là một không gian nhỏ, chúng tôi đã không ngừng lớn mạnh, không chỉ cung cấp những chiếc microphone chất lượng cao mà còn là nơi ươm mầm cho hàng ngàn ý tưởng podcast, livestream và sản phẩm âm nhạc. Mỗi sản phẩm, mỗi dịch vụ đều mang sứ mệnh giúp bạn **tìm thấy và lan tỏa thanh âm của riêng mình.**
-                            </p>
-                            <p className="font-bold italic text-pink-600">
-                                Hành trình của chúng tôi là hành trình của âm thanh và sự kết nối.
-                            </p>
-                        </div>
-                    </div>
-                </section>
-
-                <hr className="my-16 sm:my-24 border-dashed border-gray-300" />
-
-                {/* --- 3. LĨNH VỰC HOẠT ĐỘNG (Dùng card nổi bật) --- */}
-                <section className="mb-20 sm:mb-28">
-                    <h2 className="text-4xl font-black text-gray-800 mb-10 text-center">
-                        <span className="text-pink-600">LĨNH VỰC</span> HOẠT ĐỘNG CHÍNH
-                    </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-                        <div className="text-lg text-gray-700 leading-relaxed p-6 bg-orange-50 rounded-2xl shadow-lg border-l-4 border-orange-500">
-                            <p className="font-bold text-xl mb-4 text-orange-700">Cung cấp Thiết bị & Dịch vụ</p>
-                            <ul className="list-disc list-inside space-y-2">
-                                <li>Cung cấp **thiết bị thu âm chính hãng** (Micro, Soundcard, Tai nghe).</li>
-                                <li>Dịch vụ **cho thuê micro**, phục vụ podcast, voice talent và hát live.</li>
-                            </ul>
-                        </div>
-                        
-                        <div className="text-lg text-gray-700 leading-relaxed p-6 bg-pink-50 rounded-2xl shadow-lg border-l-4 border-pink-500">
-                            <p className="font-bold text-xl mb-4 text-pink-700">Sản xuất Nội dung & Không gian</p>
-                            <ul className="list-disc list-inside space-y-2">
-                                <li>Cung cấp **không gian quay podcast/TVC** chuyên nghiệp.</li>
-                                <li>Hỗ trợ **sản xuất nội dung** chất lượng cao và dịch vụ setup.</li>
-                            </ul>
-                        </div>
-                    </div>
-                    {/* Ảnh minh họa lĩnh vực */}
-                    <div className="mt-8 h-64 rounded-2xl bg-gray-200 shadow-xl flex items-center justify-center text-center text-gray-500">
-                        [Hình ảnh thiết bị âm thanh tượng trưng]
-                    </div>
-                </section>
-
-                <hr className="my-16 sm:my-24 border-dashed border-gray-300" />
-
-                {/* --- 4. GIÁ TRỊ CỐT LÕI (Thiết kế độc đáo dùng màu chủ đạo) --- */}
-                <section className="mb-20 sm:mb-28">
-                    <h2 className="text-4xl font-black text-gray-800 mb-12 text-center">
-                        <span className="text-orange-600">GIÁ TRỊ</span> CỐT LÕI
-                    </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                        {/* Cột 1: Tiêu đề và Mô tả */}
-                        <div className="p-6">
-                            <h3 className="text-5xl font-black text-gray-900 mb-4">
-                                FOUNDATION <span className="text-orange-600">5</span>
-                            </h3>
-                            <p className="text-lg text-gray-600">
-                                5 giá trị làm nên CreatiMic Studio, là cam kết của chúng tôi với khách hàng và cộng đồng.
-                            </p>
-                            <div className="mt-8 text-center">
-                                <Aperture className="w-24 h-24 text-orange-400 mx-auto" />
-                            </div>
-                        </div>
-
-                        {/* Cột 2: Danh sách Giá trị */}
-                        <div className="space-y-4">
-                            {coreValuesData.map((item, index) => (
-                                <CoreValueItem key={index} {...item} index={index} />
-                            ))}
-                        </div>
-                    </div>
-                </section>
-
-                {/* CTA - Dùng màu chủ đạo */}
-                <div className="text-center mt-20">
-                    <button className="px-10 py-4 text-xl font-bold rounded-full shadow-2xl transition-all duration-300 
-                        bg-gradient-to-r from-orange-500 to-pink-500 text-white 
-                        hover:shadow-3xl hover:scale-[1.03]">
-                        Liên Hệ Tư Vấn Ngay
-                    </button>
+            {/* Price Filter */}
+            <div className="mb-8 border-b border-gray-100 pb-6">
+                <h3 className="text-lg font-bold text-gray-700 mb-3">Mức giá</h3>
+                <div className="space-y-3">
+                    {priceRanges.map(range => (
+                        <label key={range.value} className="flex items-center space-x-3 cursor-pointer group">
+                            <input
+                                type="radio"
+                                name="priceRange"
+                                value={range.value}
+                                checked={filters.priceRange === range.value}
+                                onChange={() => onFilterChange('priceRange', range.value)}
+                                className="w-5 h-5 text-orange-500 bg-gray-100 border-gray-300 focus:ring-orange-500"
+                            />
+                            <span className={`text-base font-medium transition-colors ${filters.priceRange === range.value ? 'text-orange-600 font-semibold' : 'text-gray-600 group-hover:text-gray-800'}`}>
+                                {range.label}
+                            </span>
+                        </label>
+                    ))}
                 </div>
+            </div>
 
-            </main>
+            {/* SubCategory Filter */}
+            {subCategories.length > 0 && (
+                <div className="mb-4">
+                    <h3 className="text-lg font-bold text-gray-700 mb-3">Danh mục con</h3>
+                    <div className="space-y-3">
+                        {subCategories.map(sub => (
+                            <label key={sub} className="flex items-center space-x-3 cursor-pointer group">
+                                <input
+                                    type="radio"
+                                    name="subCategory"
+                                    value={sub}
+                                    checked={filters.subCategory === sub}
+                                    onChange={() => onFilterChange('subCategory', sub)}
+                                    className="w-5 h-5 text-orange-500 bg-gray-100 border-gray-300 focus:ring-orange-500"
+                                />
+                                <span className={`text-base font-medium transition-colors ${filters.subCategory === sub ? 'text-orange-600 font-semibold' : 'text-gray-600 group-hover:text-gray-800'}`}>
+                                    {sub}
+                                </span>
+                            </label>
+                        ))}
+                        <label className="flex items-center space-x-3 cursor-pointer group">
+                            <input
+                                type="radio"
+                                name="subCategory"
+                                value="all"
+                                checked={filters.subCategory === 'all'}
+                                onChange={() => onFilterChange('subCategory', 'all')}
+                                className="w-5 h-5 text-orange-500 bg-gray-100 border-gray-300 focus:ring-orange-500"
+                            />
+                            <span className="text-base font-medium text-gray-600 group-hover:text-gray-800">Tất cả</span>
+                        </label>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
 
-export default AboutUsSection;
+// ================= ProductsList =================
+const ProductsList = ({ products, filters, selectedCategory }) => {
+    const productsPerPage = 8;
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const filteredProducts = useMemo(() => {
+        return products.filter(product => {
+            // Price filter
+            const range = priceRanges.find(r => r.value === filters.priceRange);
+            const priceMatch = filters.priceRange === 'all' || (product.priceNum >= range.min && product.priceNum <= range.max);
+
+            // Category / SubCategory filter
+            let categoryMatch = true;
+            if (selectedCategory && selectedCategory !== 'all') {
+                if (filters.subCategory && filters.subCategory !== 'all') {
+                    categoryMatch = product.subCategory === filters.subCategory;
+                } else {
+                    categoryMatch = categories[selectedCategory].includes(product.subCategory);
+                }
+            }
+            return priceMatch && categoryMatch;
+        });
+    }, [products, filters, selectedCategory]);
+
+    // Pagination
+    const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+    const paginatedProducts = useMemo(() => {
+        const startIndex = (currentPage - 1) * productsPerPage;
+        return filteredProducts.slice(startIndex, startIndex + productsPerPage);
+    }, [filteredProducts, currentPage]);
+
+    const handlePageChange = (page) => {
+        if (page > 0 && page <= totalPages) {
+            setCurrentPage(page);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    };
+
+    React.useEffect(() => {
+        setCurrentPage(1);
+    }, [filters, selectedCategory]);
+
+    return (
+        <div className="w-full md:w-3/4 md:pl-8">
+            <div className="mb-6 pb-4 border-b border-gray-200 flex justify-between items-center">
+                <h1 className="text-3xl font-black text-gray-900">
+                    Sản Phẩm <span className="text-orange-600">Thu Âm & Livestream</span>
+                </h1>
+                <p className="text-gray-600 font-medium">{filteredProducts.length} kết quả</p>
+            </div>
+
+            {paginatedProducts.length > 0 ? (
+                <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
+                    {paginatedProducts.map(product => (
+                        <ProductCard key={product.id} product={product} />
+                    ))}
+                </div>
+            ) : (
+                <div className="text-center p-12 bg-white rounded-xl shadow-inner mt-10">
+                    <h3 className="text-xl font-bold text-gray-700">Không tìm thấy sản phẩm nào</h3>
+                    <p className="text-gray-500 mt-2">Vui lòng thử điều chỉnh bộ lọc của bạn.</p>
+                </div>
+            )}
+
+            {totalPages > 1 && (
+                <div className="flex justify-center items-center space-x-2 mt-10">
+                    <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}
+                        className="p-3 bg-white border border-gray-300 rounded-lg hover:bg-orange-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                        <ChevronLeft className="w-5 h-5 text-gray-700" />
+                    </button>
+                    {[...Array(totalPages)].map((_, index) => (
+                        <button key={index} onClick={() => handlePageChange(index + 1)}
+                            className={`px-4 py-2 font-bold rounded-lg transition-all ${currentPage === index + 1 ? 'bg-orange-600 text-white shadow-md' : 'bg-white text-gray-700 hover:bg-orange-100 border border-gray-300'}`}>
+                            {index + 1}
+                        </button>
+                    ))}
+                    <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}
+                        className="p-3 bg-white border border-gray-300 rounded-lg hover:bg-orange-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                        <ChevronRight className="w-5 h-5 text-gray-700" />
+                    </button>
+                </div>
+            )}
+        </div>
+    );
+};
+
+// ================= CategoryTopMenu =================
+const CategoryTopMenu = ({ selectedCategory, onSelectCategory }) => (
+    <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3 mb-6">
+        <button onClick={() => onSelectCategory('all')}
+            className={`p-3 rounded-2xl font-semibold transition ${selectedCategory === 'all' ? 'bg-orange-500 text-white' : 'bg-white shadow hover:bg-orange-50'}`}>
+            Tất cả
+        </button>
+        {Object.keys(categories).map(cat => (
+            <button key={cat} onClick={() => onSelectCategory(cat)}
+                className={`p-3 rounded-2xl font-semibold transition ${selectedCategory === cat ? 'bg-orange-500 text-white' : 'bg-white shadow hover:bg-orange-50'}`}>
+                {cat}
+            </button>
+        ))}
+    </div>
+);
+
+// ================= SanPham Component =================
+export default function SanPham() {
+    const [selectedCategory, setSelectedCategory] = useState('all');
+    const [filters, setFilters] = useState({
+        priceRange: 'all',
+        subCategory: 'all',
+    });
+
+    const handleFilterChange = (key, value) => {
+        setFilters(prev => ({ ...prev, [key]: value }));
+    };
+
+    return (
+        <div className="min-h-screen bg-gray-50 p-4 sm:p-8 lg:p-12 font-sans">
+            {/* Top category menu */}
+            <CategoryTopMenu selectedCategory={selectedCategory} onSelectCategory={cat => {
+                setSelectedCategory(cat);
+                setFilters(prev => ({ ...prev, subCategory: 'all' })); // reset subCategory
+            }} />
+
+            <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-8">
+                {/* Sidebar */}
+                <FilterSidebar selectedCategory={selectedCategory} filters={filters} onFilterChange={handleFilterChange} />
+
+                {/* Product list */}
+                <ProductsList products={productsData} filters={filters} selectedCategory={selectedCategory} />
+            </div>
+        </div>
+    );
+}

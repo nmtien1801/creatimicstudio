@@ -4,6 +4,7 @@ import {
 } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import Header from "../header/HeaderClient";
+import Footer from "../footer";
 
 function ClientLayout() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -33,6 +34,7 @@ function ClientLayout() {
                 {/* Main Content */}
                 <main className="flex-grow overflow-auto">
                     <Outlet />
+                    <Footer />
                 </main>
             </div>
 
