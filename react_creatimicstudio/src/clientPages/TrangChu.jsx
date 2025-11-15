@@ -1,18 +1,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Phone, Truck, RefreshCw, MessageSquare, Tag, Star, Heart, Menu } from 'lucide-react';
 
-
 const productsData = [
     { id: 1, name: "Micro thu âm BM-800", price: "990.000₫", oldPrice: "1.290.000₫", rating: 4.8, img: 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=400&h=400&fit=crop' },
     { id: 2, name: "Soundcard XOX K10", price: "1.250.000₫", oldPrice: "1.590.000₫", rating: 4.9, img: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=400&h=400&fit=crop' },
-    { id: 3, name: "Tai nghe kiểm âm OneOdio", price: "750.000₫", oldPrice: "950.000₫", rating: 4.7, img: 'https://images.unsplash.com/photo-1545127398-14699f92334b?w=400&h=400&fit=crop' },
+    { id: 3, name: "Tai nghe kiểm âm OneOdio", price: "750.000₫", oldPrice: "950.000₫", rating: 4.8, img: 'https://images.unsplash.com/photo-1545127398-14699f92334b?w=400&h=400&fit=crop' },
     { id: 4, name: "Combo Livestream Cao Cấp", price: "3.500.000₫", oldPrice: "4.200.000₫", rating: 5.0, img: 'https://images.unsplash.com/photo-1589903308904-1010c2294adc?w=400&h=400&fit=crop' },
     { id: 5, name: "Loa kiểm âm Edifier R1280DB", price: "2.800.000₫", oldPrice: "3.200.000₫", rating: 4.8, img: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&h=400&fit=crop' },
-    { id: 6, name: "Phụ kiện chân đế Micro", price: "150.000₫", oldPrice: "190.000₫", rating: 4.6, img: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=400&h=400&fit=crop' },
-    { id: 7, name: "Micro cài áo không dây", price: "690.000₫", oldPrice: "890.000₫", rating: 4.7, img: 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=400&h=400&fit=crop' },
+    { id: 6, name: "Phụ kiện chân đế Micro", price: "150.000₫", oldPrice: "190.000₫", rating: 4.9, img: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=400&h=400&fit=crop' },
+    { id: 7, name: "Micro cài áo không dây", price: "690.000₫", oldPrice: "890.000₫", rating: 4.9, img: 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=400&h=400&fit=crop' },
     { id: 8, name: "Mixer Yamaha MG10XU", price: "5.500.000₫", oldPrice: "6.200.000₫", rating: 4.9, img: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=400&h=400&fit=crop' },
-    { id: 9, name: "Hộp Livestream Mini", price: "450.000₫", oldPrice: "590.000₫", rating: 4.6, img: 'https://images.unsplash.com/photo-1589903308904-1010c2294adc?w=400&h=400&fit=crop' },
-    { id: 10, name: "Sản phẩm khác", price: "Liên hệ", oldPrice: "", rating: 4.5, img: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=400&h=400&fit=crop' },
+    { id: 9, name: "Hộp Livestream Mini", price: "450.000₫", oldPrice: "590.000₫", rating: 4.8, img: 'https://images.unsplash.com/photo-1589903308904-1010c2294adc?w=400&h=400&fit=crop' },
+    { id: 10, name: "Sản phẩm khác", price: "Liên hệ", oldPrice: "", rating: 5.0, img: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=400&h=400&fit=crop' },
 ];
 
 const articlesData = [
@@ -89,7 +88,7 @@ const ProductCard = ({ product, isTopSeller = false }) => {
                     ? 'bg-gradient-to-r from-orange-500 to-pink-500 text-white hover:shadow-xl hover:scale-105'
                     : 'bg-orange-500 text-white hover:bg-orange-600 hover:shadow-lg'
                     }`}>
-                    Thêm vào giỏ
+                    Mua ngay
                 </button>
             </div>
         </div>
@@ -414,8 +413,6 @@ export default function TrangChu() {
                     © 2025 Creative Studio. All rights reserved. Designed with ❤️
                 </div>
             </footer>
-
-            {/* Mobile Navigation - Fixed Bottom Bar (Đã xóa) */}
         </div>
     );
 }

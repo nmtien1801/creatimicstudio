@@ -181,7 +181,7 @@ export default function SlideBar({ isSidebarOpen }) {
                   className={`w-full px-4 py-3 flex items-center gap-3 hover:bg-[#026aa8] transition-colors ${expandedMenu === 'notifications' ? 'bg-[#026aa8]' : ''}`}
                 >
                   <Calendar className="w-5 h-5 flex-shrink-0" />
-                  <span className="flex-1 text-left">Thông khách hàng</span>
+                  <span className="flex-1 text-left">Quản lý nhân sự</span>
                   <ChevronDown className={`w-4 h-4 transition-transform ${expandedMenu === 'notifications' ? 'rotate-180' : ''}`} />
                 </button>
 

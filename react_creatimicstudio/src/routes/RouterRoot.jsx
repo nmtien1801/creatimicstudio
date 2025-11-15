@@ -33,6 +33,11 @@ import { GetAccount } from "../redux/authSlice";
 import Cookies from "js-cookie";
 
 import Home from "../clientPages/TrangChu.jsx";
+import About from "../clientPages/GioiThieu.jsx";
+import Products from "../clientPages/SanPham.jsx";
+import News from "../clientPages/TinTuc.jsx";
+import Careers from "../clientPages/TuyenDung.jsx";
+import Contact from "../clientPages/LienHe.jsx";
 
 const ProtectedRoute = ({ children, role }) => {
   const { userInfo, isLoading } = useSelector((state) => state.auth);
@@ -89,46 +94,51 @@ function RouterRoot() {
         <Route path="/" element={<ClientLayout />}>
           <Route index element={<Navigate to="home" replace />} />
           <Route path="home" element={<Home />} />
+          <Route path="about" element={<About />} />
+          <Route path="products" element={<Products />} />
+          <Route path="news" element={<News />} />
+          <Route path="careers" element={<Careers />} />
+          <Route path="contact" element={<Contact />} />
         </Route>
 
         {/* private route */}
         <Route
-            path="/"
-            element={
-              <ProtectedRoute role="admin">
-                <AdminLayout />
-              </ProtectedRoute>
-            }
-          >
-            {/* route system */}
-            <Route index element={<Navigate to="dashboard" replace />} />
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="change-pass-student" element={<ChangePassStudent />} />
-            <Route path="change-pass-tc" element={<ChangePassTC />} />
-            <Route path="account" element={<Account />} />
+          path="/"
+          element={
+            <ProtectedRoute role="admin">
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
+          {/* route system */}
+          <Route index element={<Navigate to="dashboard" replace />} />
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="change-pass-student" element={<ChangePassStudent />} />
+          <Route path="change-pass-tc" element={<ChangePassTC />} />
+          <Route path="account" element={<Account />} />
 
-            {/* route schedule */}
-            <Route path="scheduleMonth" element={<ScheduleMonth />} />
-            <Route path="lookup" element={<Lookup />} />
-            <Route path="schedule-exam-month" element={<ScheduleExamMonth />} />
-            <Route path="timetable-class" element={<TimetableClass />} />
-            <Route path="timetable" element={<Timetable />} />
-            <Route path="lesson" element={<Lesson />} />
-            <Route path="schedule-day" element={<ScheduleDay />} />
+          {/* route schedule */}
+          <Route path="scheduleMonth" element={<ScheduleMonth />} />
+          <Route path="lookup" element={<Lookup />} />
+          <Route path="schedule-exam-month" element={<ScheduleExamMonth />} />
+          <Route path="timetable-class" element={<TimetableClass />} />
+          <Route path="timetable" element={<Timetable />} />
+          <Route path="lesson" element={<Lesson />} />
+          <Route path="schedule-day" element={<ScheduleDay />} />
 
-            {/* route grades */}
-            <Route path="final-exam" element={<FinalExam />} />
-            <Route path="graduation-exam" element={<GraduationExam />} />
-            <Route path="look-up-final-exam" element={<LookUpFinalExam />} />
-            <Route path="look-up-graduation-exam" element={<LookUpGraduationExam />} />
-            <Route path="print-transcript" element={<PrintTranscript />} />
+          {/* route grades */}
+          <Route path="final-exam" element={<FinalExam />} />
+          <Route path="graduation-exam" element={<GraduationExam />} />
+          <Route path="look-up-final-exam" element={<LookUpFinalExam />} />
+          <Route path="look-up-graduation-exam" element={<LookUpGraduationExam />} />
+          <Route path="print-transcript" element={<PrintTranscript />} />
 
-            {/* route result */}
-            <Route path="learning-results" element={<LearningResults />} />
+          {/* route result */}
+          <Route path="learning-results" element={<LearningResults />} />
 
-            {/* Notification */}
-            <Route path="notification" element={<Notification />} />
-          </Route>
+          {/* Notification */}
+          <Route path="notification" element={<Notification />} />
+        </Route>
 
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
