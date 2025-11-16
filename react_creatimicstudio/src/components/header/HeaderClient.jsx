@@ -30,7 +30,7 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
 
           <div className="hidden sm:block">
             <h1 className="text-2xl font-black bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
-              CREATIVE STUDIO
+              CREATIMICSTUDIO
             </h1>
             <p className="text-xs text-gray-500 font-medium">Thiết bị thu âm chuyên nghiệp</p>
           </div>

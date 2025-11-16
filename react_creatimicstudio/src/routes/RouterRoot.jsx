@@ -38,6 +38,7 @@ import Products from "../clientPages/SanPham.jsx";
 import News from "../clientPages/TinTuc.jsx";
 import Careers from "../clientPages/TuyenDung.jsx";
 import Contact from "../clientPages/LienHe.jsx";
+import JobDetail from '../components/hire/JobDetail';
 
 const ProtectedRoute = ({ children, role }) => {
   const { userInfo, isLoading } = useSelector((state) => state.auth);
@@ -98,6 +99,7 @@ function RouterRoot() {
           <Route path="products" element={<Products />} />
           <Route path="news" element={<News />} />
           <Route path="careers" element={<Careers />} />
+          <Route path="/careers/:id" element={<JobDetail />} />
           <Route path="contact" element={<Contact />} />
         </Route>
 

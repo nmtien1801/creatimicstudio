@@ -20,7 +20,7 @@ const articlesData = [
     { title: "Soundcard là gì? Chọn loại nào tốt?", img: 'https://images.unsplash.com/photo-1545127398-14699f92334b?w=600&h=400&fit=crop' },
 ];
 
-const CategorySection = ({ title, products, bannerText, buttonLink, count, countText, isLoudspeaker = false }) => {
+const CategorySection = ({ title, products, bannerText, buttonLink, countText, isLoudspeaker = false }) => {
     return (
         <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-white to-gray-50">
             <div className="max-w-7xl mx-auto">
@@ -29,7 +29,7 @@ const CategorySection = ({ title, products, bannerText, buttonLink, count, count
                         <h2 className="text-3xl lg:text-4xl font-black bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent mb-2">
                             {title}
                         </h2>
-                        <p className="text-sm text-gray-600">{count} sản phẩm thuộc danh mục {countText}</p>
+                        <p className="text-sm text-gray-600">sản phẩm thuộc danh mục {countText}</p>
                     </div>
                 </div>
 
@@ -183,7 +183,6 @@ export default function TrangChu() {
                     products={comboProducts}
                     bannerText="Combo Livestream Chất Lượng Cao"
                     buttonLink="#"
-                    count={10}
                     countText="Bộ livestream, thu âm"
                 />
 
@@ -195,7 +194,7 @@ export default function TrangChu() {
                                 <h2 className="text-3xl lg:text-4xl font-black bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent mb-2">
                                     PHỤ KIỆN THU ÂM
                                 </h2>
-                                <p className="text-sm text-gray-600">8 sản phẩm thuộc danh mục Phụ kiện thu âm</p>
+                                <p className="text-sm text-gray-600">sản phẩm thuộc danh mục Phụ kiện thu âm</p>
                             </div>
                         </div>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
@@ -232,7 +231,6 @@ export default function TrangChu() {
                     products={loaProducts}
                     bannerText="Loa Kiểm Âm Studio"
                     buttonLink="#"
-                    count={6}
                     countText="Loa"
                     isLoudspeaker={true}
                 />
