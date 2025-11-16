@@ -1,0 +1,15 @@
+[build]
+  # Thư mục cơ sở để chạy lệnh (chuyển vào FE)
+  base = "react_creatimicstudio"
+  
+  # Lệnh build
+  command = "npm run build"
+  
+  # Thư mục output cuối cùng (tương đối với base)
+  publish = "dist/react_creatimicstudio"
+  
+# Cấu hình cho Single Page Application (Rất quan trọng cho React)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
